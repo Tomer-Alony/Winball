@@ -1,8 +1,27 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  a : {
+    color: "inherit",
+    textDecoration: "none",
+  },
+  toolbar: {
+    display: "flex",
+  },
+  loginButton: {
+    alignSelf: "right",
+  }
+});
 
 const Header = () => {
+  const classes = useStyles();
   const user = useSelector((state) => state.auth);
   const renderContent = () => {
     switch (user) {
@@ -10,27 +29,42 @@ const Header = () => {
         return;
       case false:
         return (
-          <li>
-            <a href='/auth/google'>Login With Google</a>;
-          </li>
+          <Button color="inherit" className={classes.loginButton}>
+            <a href='/auth/google' className={classes.a}>Login With Google</a>
+          </Button>
         );
       default:
         return [
-          <li key='2'>
-            <a href='/api/logout'>Logout</a>
-          </li>,
+          <Button color="inherit" className={classes.loginButton} key={1}>
+            <Link to={'/Groups'} className={classes.a}>Groups</Link>
+          </Button>,
+          <Button color="inherit" className={classes.loginButton} key={2}>
+            <Link to={'/Games'} className={classes.a}>Games</Link>
+          </Button>,
+          <Button color="inherit" className={classes.loginButton} key={3}>
+            <a href='/api/logout' className={classes.a}>Logout</a>
+          </Button>
         ];
     }
   };
 
   return (
     <nav>
-      <div className='nav-wrapper'>
-        <Link to={user ? '/home' : '/'} className='left brand-logo'>
-          Winball
-        </Link>
-        <ul className='right'>{renderContent()}</ul>
-      </div>
+      <AppBar position="static">
+        
+        <div className={classes.toolbar}>
+          <Toolbar>
+            
+          <Link to={user ? '/home' : '/'} className={classes.a}>
+            <Typography variant="h4">
+              Winball
+            </Typography>
+          </Link>
+          
+          {renderContent()}
+          </Toolbar>
+        </div>
+      </AppBar>
     </nav>
   );
 };

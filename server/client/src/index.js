@@ -6,9 +6,19 @@ import reduxThunk from 'redux-thunk';
 
 import App from './components/App';
 import reducers from './reducers';
-
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import axios from 'axios';
 window.axios = axios;
+
+
+
+const theme = createMuiTheme({
+  palette: {
+    background: {
+      paper: 'lightgrey',
+    }
+  }
+});
 
 const store = createStore(
   reducers,
@@ -21,7 +31,9 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </Provider>,
   document.querySelector('#root')
 );
