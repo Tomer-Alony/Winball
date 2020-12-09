@@ -9,6 +9,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import ImageIcon from '@material-ui/icons/Image';
 import Typography from '@material-ui/core/Typography';
+import GroupItem from './GroupItem/GroupItem';
+
 
 const groupsfakedata = [
     {
@@ -94,7 +96,8 @@ const Groups = () => {
     const renderGroupsDetailsLayout = () => {
         return (
             <div>
-                <Typography variant="h4">{selectedGroup.name}</Typography>
+                {/* <Typography variant="h4">{selectedGroup.name}</Typography> */}
+                <GroupItem group={selectedGroup} />
             </div>
         );
     };
