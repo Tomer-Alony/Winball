@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as _ from 'lodash';
 import { makeStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,15 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Group } from '../../../modles/Group';
 import UserData from './UserData';
-import pic1 from '../../../static/images/avatar/1.jpeg';
-import pic2 from '../../../static/images/avatar/2.jpeg';
-import pic3 from '../../../static/images/avatar/3.jpeg';
-import pic4 from '../../../static/images/avatar/4.jpeg';
-
-export interface Player {
-    name: string,
-    picPath: any
-}
 
 interface GroupState {
 
@@ -38,10 +30,6 @@ const useStyles = makeStyles({
         width: 'calc(100%/6)'
     }
 });
-
-function createData(playerData: Player, games: number, side: number, bullseye: number, points: number, id: number) {
-    return { playerData, games, side, bullseye, points, id };
-}
 
 const columns = [
     { id: 'player', label: 'Player', align: 'center' },
@@ -64,17 +52,11 @@ const columns = [
     }
 ];
 
-const players = [
-    createData({ name: 'Adir Sation', picPath: pic1 }, 3, 1, 2, 10, 1),
-    createData({ name: 'Shira Cohen', picPath: pic2 }, 3, 1, 2, 10, 2),
-    createData({ name: 'Tomer Alony', picPath: pic3 }, 3, 1, 2, 10, 3),
-    createData({ name: 'Yair Vered', picPath: pic4 }, 3, 1, 2, 10, 4),
-];
-
-export default function GroupItem(props: GroupProps, state: GroupState) {
+export default function GroupDisplay(props: GroupProps, state: GroupState) {
     const classes = useStyles();
 
     const { group } = props;
+    group.playersData = _.sortBy(group.playersData, ['points', 'bullseye', 'side']).reverse();
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
@@ -93,11 +75,11 @@ export default function GroupItem(props: GroupProps, state: GroupState) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {players.map((currPlayer) => {
+                        {group.playersData.map((currPlayer) => {
                             return (
                                 <TableRow>
                                     <TableCell key={'player' + currPlayer.id} className={classes.tableCell} >
-                                        <UserData player={currPlayer.playerData} />
+                                        <UserData name={currPlayer.name} picPath={currPlayer.picPath} />
                                     </TableCell>
                                     <TableCell key={'games' + currPlayer.id} className={classes.tableCell}>
                                         {currPlayer.games}

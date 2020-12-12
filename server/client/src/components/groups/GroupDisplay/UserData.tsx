@@ -2,14 +2,15 @@ import * as React from "react";
 import { makeStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from "@material-ui/core";
-import { Player } from './GroupItem';
+
 
 interface UserDataState {
 
 }
 
 interface UserDataProps      {
-    player: Player
+    picPath: string,
+    name: string
 }
 
 const styles = makeStyles((theme) => ({
@@ -30,12 +31,12 @@ const styles = makeStyles((theme) => ({
 
 export default function UserData(props: UserDataProps, state: UserDataState) {
     const classes = styles();
-    const { player } = props;
+    const { name, picPath } = props;
 
     return (
         <div className={classes.root}>
-            <Avatar alt={player.name} src={player.picPath} className={classes.large} />
-            <Typography variant="overline">{player.name}</Typography>
+            <Avatar alt={name} src={picPath} className={classes.large} />
+            <Typography variant="overline">{name}</Typography>
             {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpeg" /> */}
             {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpeg" className={classes.large} /> */}
         </div>
