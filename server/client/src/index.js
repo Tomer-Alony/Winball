@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
+import Theme from './Theme';
 
 import App from './components/App';
 import reducers from './reducers';
@@ -11,14 +12,6 @@ import axios from 'axios';
 window.axios = axios;
 
 
-
-const theme = createMuiTheme({
-  palette: {
-    background: {
-      paper: 'lightgrey',
-    }
-  }
-});
 
 const store = createStore(
   reducers,
@@ -31,8 +24,8 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <App />
+    <ThemeProvider theme={Theme}>
+      <App/>
     </ThemeProvider>
   </Provider>,
   document.querySelector('#root')
