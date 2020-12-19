@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import axios from 'axios';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,13 +10,11 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import ImageIcon from '@material-ui/icons/Image';
-import Typography from '@material-ui/core/Typography';
-import GroupItem from './GroupDisplay/GroupDisplay';
+import GroupDisplay from './GroupDisplay/GroupDisplay';
 import pic1 from '../../static/images/avatar/1.jpeg';
 import pic2 from '../../static/images/avatar/2.jpeg';
 import pic3 from '../../static/images/avatar/3.jpeg';
-import pic4 from '../../static/images/avatar/4.jpeg';
-
+import pic4 from '../../static/images/avatar/4.jpeg'
 
 const groupsfakedata = [
     {
@@ -81,8 +81,26 @@ const useStyles = makeStyles((theme) =>
     }),
 );
 
+
+
 const Groups = () => {
-    const [selectedGroup, setSelectedGroup] = useState(groupsfakedata[0]);
+    const [groupsData, setGroupsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedGroup, setSelectedGroup] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await axios(
+                '/api/groups/all',
+            );
+
+            await setGroupsData(result.data);
+            await setSelectedGroup(result.data[0]);
+            setIsLoading(false);
+        };
+
+        if(isLoading) fetchData();
+    });
 
     const classes = useStyles();
 
@@ -93,13 +111,14 @@ const Groups = () => {
     const renderGroupsLayout = () => {
         return (
             <List className={classes.root}>
-                {
-                    groupsfakedata.map(group => {
+                { isLoading
+                    ? <CircularProgress />
+                    : groupsData.map(group => {
                         return (
                             <ListItem
                                 button
-                                key={group.id}
-                                selected={group.id === selectedGroup.id}
+                                key={group._id}
+                                selected={group._id === selectedGroup._id}
                                 onClick={() => handleGroupSelection(group)}
                             >
                                 <ListItemAvatar>
@@ -125,7 +144,10 @@ const Groups = () => {
         return (
             <div>
                 {/* <Typography variant="h4">{selectedGroup.name}</Typography> */}
-                <GroupItem group={selectedGroup} />
+                { !isLoading
+                    ? <GroupDisplay group={selectedGroup} />
+                    : ''
+                }
             </div>
         );
     };
