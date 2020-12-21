@@ -25,6 +25,6 @@ export default function Games(props: GameDataProps, state: GameDataState) {
     const {  } = props;
 
     return (
-        
+        <div></div>
     );
 };
