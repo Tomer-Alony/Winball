@@ -1,19 +1,26 @@
 export interface Group {
-    id: string,
+    _id: string,
     name: string,
+    players: PlayerScores[],
     description: string
-    playersData: PlayerData[]
+    leaguesIds: string[],
+    manager_id: string,
 }
 
-export interface PlayerData {
-    
-    name: string,
-    picPath: string,
-    id: number,
+export interface PlayerScores {
     games: number,
     side: number,
     bullseye: number,
-    points: number
+    points: number,
+    playerId: string
+}
+
+export interface PlayerMetadata extends Map<string, {
+    displayName: string,
+    picture: string,
+    id: number
+}> {
+
 }
 
 export interface PlayerAvatar {

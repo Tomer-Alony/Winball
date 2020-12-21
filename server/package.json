@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/express": "^4.17.9",
     "@types/mongoose": "^5.10.0",
     "@types/node": "^14.14.7",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "@types/passport": "^1.0.4",
+    "axios": "^0.21.0",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
     "mongoose": "^5.10.15",
