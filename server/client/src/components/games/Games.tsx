@@ -1,4 +1,4 @@
-import { makeStyles, WithStyles } from "@material-ui/core";
+import { makeStyles, Paper, WithStyles } from "@material-ui/core";
 import * as React from "react";
 import { Game } from '../../modles/Game';
 
@@ -18,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     container: {
         maxHeight: '100%',
     },
+    gameContainer: {
+        width: '100%',
+    }
 }));
 
 export default function Games(props: GameProps, state: GameState) {
@@ -27,7 +30,13 @@ export default function Games(props: GameProps, state: GameState) {
 
     return (
         <div style={{ textAlign: 'center' }} className={classes.root}>
-        <h1>Games</h1>
+            <h1>Games</h1>
+            <Paper className={classes.gameContainer}>
+                <div>16:30</div>
+                <div>
+                    <img src={require('../../static/images/groups/Fcb.png')}></img>
+                </div>
+            </Paper>
         </div>
     );
 };
