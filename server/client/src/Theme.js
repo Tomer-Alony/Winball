@@ -35,13 +35,13 @@ export default createMuiTheme({
     typography: {
         fontFamily: 'Assistant',
         h4: {
-            fontFamily: 'Assistant'
+            fontFamily: 'fantasy'
         }
     },
     overrides: {
         MuiCssBaseline: {
           '@global': {
-            '@font-face': [luckiestGuy],
+            '@font-face': [luckiestGuy, assistant],
           },
         },
       },
