@@ -61,6 +61,7 @@ export default function GroupDisplay(props: GroupProps, state: GroupState) {
     const { group } = props;
     const classes = useStyles();
 
+    group.players = _.sortBy(group.players, ['points', 'bullseye', 'side']).reverse();
     useEffect(() => {
         if (group) {
             const fetchData = async () => {
