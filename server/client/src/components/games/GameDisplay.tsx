@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     gameContainer: {
         width: '100%',
         paddingTop: '8px',
-        backgroundColor: '#00889138',
+        backgroundColor: '#e7e7de',
         marginBottom: '5px'
     },
     details: {
