@@ -1,6 +1,10 @@
-import { makeStyles, WithStyles } from "@material-ui/core";
-import * as React from "react";
+import { makeStyles, Paper, TextField, Typography, WithStyles } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import { Game } from '../../modles/Game';
+import axios from 'axios';
+import GameDisplay from './GameDisplay';
+import FootballPic from '../../static/images/groups/football.png'
+
 
 interface GameState {
 
@@ -22,12 +26,37 @@ const useStyles = makeStyles(theme => ({
 
 export default function Games(props: GameProps, state: GameState) {
     const classes = useStyles();
+    const [isLoading, setIsLoading] = useState(true);
+    const [games, setGames] = useState([]);
+    const [teams, setTeams] = useState([]);
 
-    const { game } = props;
+    
+    useEffect(() => {
+        if (games.length === 0) {
+            const fetchData = async () => {
+                const gamesResult = await axios.get('/api/games');
+                const teamsReuslt = await axios.get('/api/teams');
+                
+                if(gamesResult && teamsReuslt) {
+                    setIsLoading(false);
+                    setGames(gamesResult.data);
+                    setTeams(teamsReuslt.data);
+                }
+            };
 
+            if(isLoading) fetchData();
+        }
+    }, []);
+    debugger
     return (
         <div style={{ textAlign: 'center' }} className={classes.root}>
-        <h1>Games</h1>
+            <h1>Games</h1>
+            {games.map(game => (<GameDisplay teamAName={game.teamAId} 
+                                             teamBName={game.teamBId} 
+                                             startDate={game.startDate}
+                                             startTime={game.startTime}
+                                             picAPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamAId))?.picPath || FootballPic : ""}
+                                             picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""}></GameDisplay>))}
         </div>
     );
 };
