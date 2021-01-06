@@ -92,7 +92,6 @@ const Groups = () => {
     const renderGroupsDetailsLayout = () => {
         return (
             <div>
-                {/* <Typography variant="h4">{selectedGroup.name}</Typography> */}
                 { !isLoading
                     ? <GroupDisplay group={selectedGroup} />
                     : ''

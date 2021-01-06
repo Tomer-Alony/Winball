@@ -37,8 +37,6 @@ export default function UserData(props: UserDataProps, state: UserDataState) {
         <div className={classes.root}>
             <Avatar alt={name} src={picPath} className={classes.large} />
             <Typography variant="overline">{name}</Typography>
-            {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpeg" /> */}
-            {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpeg" className={classes.large} /> */}
         </div>
     );
 }
