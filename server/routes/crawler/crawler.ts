@@ -23,11 +23,6 @@ router.get('/teams', async (req, res) => {
 
 router.get('/games', async (req, res) => {
     const games = await axios('http://localhost:5000/games');
-    //     date:'2020-09-12T00:00:00.000Z'
-    // score:'0–0'
-    // teamA:'Eibar'
-    // teamB:'Celta Vigo'
-    // time:'2021-01-03T15:00:56.486Z'
 
     if (games.data) {
         const resp = games.data.map(currGame => {
