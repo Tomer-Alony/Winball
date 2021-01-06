@@ -1,3 +1,5 @@
 export * from './User'
 export * from './Group'
 export * from './GroupUser'
+export * from './Teams'
+export * from './Games'
