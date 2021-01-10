@@ -4,11 +4,27 @@ import { IGroup } from '../../models/Group';
 
 const router = Router();
 const Group = mongoose.model('Groups');
+const Users = mongoose.model('Users');
 const GroupUser = mongoose.model('GroupUser');
 
 router.get('/all', async (req, res) => {
-    const groups = await Group.find({});
-    res.json(groups);
+    // @ts-ignore
+    const loggedUser = await Users.find({googleId: req.user.googleId})
+    Group.find({
+        'players':
+        {
+            $elemMatch:
+                { playerId: loggedUser[0]._id }
+        }
+    }).exec(async (err, result) => {
+        if (err) {
+            console.log(err.message);
+            res.status(500).send('an error occured while trying to query users');
+        }
+        else {
+            res.json(result);
+        }
+    });
 });
 
 router.put('/add', async (req, res) => {
