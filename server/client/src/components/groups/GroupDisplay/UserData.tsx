@@ -8,7 +8,7 @@ interface UserDataState {
 
 }
 
-interface UserDataProps      {
+interface UserDataProps {
     picPath: string,
     name: string
 }

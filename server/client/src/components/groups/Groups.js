@@ -11,6 +11,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import ImageIcon from '@material-ui/icons/Image';
 import GroupDisplay from './GroupDisplay/GroupDisplay';
+import AddGroupDialog from './GroupDisplay/AddGroupDialog';
 
 const padding = 20;
 const useStyles = makeStyles((theme) =>
@@ -30,8 +31,6 @@ const useStyles = makeStyles((theme) =>
     }),
 );
 
-
-
 const Groups = () => {
     const [groupsData, setGroupsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +47,7 @@ const Groups = () => {
             setIsLoading(false);
         };
 
-        if(isLoading) fetchData();
+        if (isLoading) fetchData();
     });
 
     const classes = useStyles();
@@ -57,35 +56,45 @@ const Groups = () => {
         setSelectedGroup(group);
     }
 
+    const handleNewGroup = (newGroup) => {
+        var newGroupsData = [...groupsData];
+        newGroupsData.push(newGroup);
+        setGroupsData(newGroupsData);
+        setIsLoading(true);
+    }
+
     const renderGroupsLayout = () => {
         return (
-            <List className={classes.root}>
-                { isLoading
-                    ? <CircularProgress />
-                    : groupsData.map(group => {
-                        return (
-                            <ListItem
-                                button
-                                key={group._id}
-                                selected={group._id === selectedGroup._id}
-                                onClick={() => handleGroupSelection(group)}
-                            >
-                                <ListItemAvatar>
-                                    <Avatar>
-                                        <ImageIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={group.name}
-                                    secondary={group.description}
-                                />
-                            </ListItem>
-                        )
-                    })
-                }
+            <>
+                <AddGroupDialog handleNewGroup={handleNewGroup}/>
+                <List className={classes.root}>
+                    {isLoading
+                        ? <CircularProgress />
+                        : groupsData.map(group => {
+                            return (
+                                <ListItem
+                                    button
+                                    key={group._id}
+                                    selected={group._id === selectedGroup._id}
+                                    onClick={() => handleGroupSelection(group)}
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar>
+                                            <ImageIcon />
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={group.name}
+                                        secondary={group.description}
+                                    />
+                                </ListItem>
+                            )
+                        })
+                    }
 
 
-            </List>
+                </List>
+            </>
         );
     };
 

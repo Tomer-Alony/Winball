@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     const playersObjectIds = playersIds.map(playerId => {
         return mongoose.Types.ObjectId(playerId);
     });
-
+            
     Users.find({
         '_id': {
             $in:
@@ -21,6 +21,18 @@ router.post('/', async (req, res) => {
         }
         else {
             res.status(200).send(result);
+        }
+    });
+})
+
+router.get('/all', async (req, res) => {
+    Users.find({}).exec(async (err, result) => {
+        if (err) {
+            console.log(err.message);
+            res.status(500).send('an error occured while trying to query all users');
+        }
+        else {
+            res.json(result);
         }
     });
 })
