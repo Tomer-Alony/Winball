@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+    import TextField from '@material-ui/core/TextField';
 
 interface GroupTextInputProps {
     handleChange: (name: string) => void,
@@ -8,14 +8,13 @@ interface GroupTextInputProps {
     isFocused: boolean
 }
 
-interface GroupsTestInputState {
+interface GroupsTextInputState {
 }
 
-export default function GroupTextInput(props: GroupTextInputProps, state: GroupsTestInputState) {
+export default function GroupTextInput(props: GroupTextInputProps, state: GroupsTextInputState) {
     const { handleChange, label, isFocused } = props;
 
     return (
-        
             <TextField id="standard-required"
                 label={label}
                 autoFocus={isFocused}

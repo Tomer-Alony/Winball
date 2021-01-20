@@ -167,13 +167,17 @@ export default function UserData(props: AddGroupDialogProps, state: AddGroupDial
                                 <DialogContentText>
                                     Select group participants:
                                     </DialogContentText>
-                                <DataSelection data={usersData}
+                                <DataSelection 
+                                    data={usersData}
+                                    selectedData={[]}
                                     handleChange={handleUsersChange}
                                     label='Participants' />
                                 <DialogContentText>
                                     Select leagues:
                                     </DialogContentText>
-                                <DataSelection data={leaguesData}
+                                <DataSelection 
+                                    data={leaguesData}
+                                    selectedData={[]}
                                     handleChange={handleLeaguesChange}
                                     label='Leagues' />
                             </form>

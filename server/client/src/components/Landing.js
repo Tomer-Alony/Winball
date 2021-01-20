@@ -1,11 +1,9 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 const Landing = () => {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>Winball</h1>
-      <h5>Have fun with your guys</h5>
-    </div>
+    <Redirect to='/groups' />
   );
 };
 

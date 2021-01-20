@@ -3,15 +3,19 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import axios from 'axios';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import EditIcon from '@material-ui/icons/Edit';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import ImageIcon from '@material-ui/icons/Image';
 import GroupDisplay from './GroupDisplay/GroupDisplay';
 import AddGroupDialog from './GroupDisplay/AddGroupDialog';
+import EditGroupDialog from './EditGroup/EditGroupDialog';
 
 const padding = 20;
 const useStyles = makeStyles((theme) =>
@@ -35,6 +39,7 @@ const Groups = () => {
     const [groupsData, setGroupsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedGroup, setSelectedGroup] = useState([]);
+    const [isEditMode, setIsEditMode] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,10 +68,28 @@ const Groups = () => {
         setIsLoading(true);
     }
 
+    const handleEditMode = (toggle) => {
+        setIsEditMode(toggle);
+    }
+
+    const handleUpdatedGroup = (updatedGroup) => {
+        updatedGroup.isManager = true;
+        const updatedGroups = groupsData.map(currGroup => {
+            return currGroup._id === updatedGroup._id ? updatedGroup : currGroup;
+        })
+
+        setGroupsData(updatedGroups);
+        setSelectedGroup(updatedGroup);
+    }
+
     const renderGroupsLayout = () => {
         return (
             <>
-                <AddGroupDialog handleNewGroup={handleNewGroup}/>
+                <AddGroupDialog handleNewGroup={handleNewGroup} />
+                <EditGroupDialog isOpen={isEditMode} 
+                                 handleIsOpen={handleEditMode}
+                                 group={selectedGroup}
+                                 handleUpdatedGroup={handleUpdatedGroup}/>
                 <List className={classes.root}>
                     {isLoading
                         ? <CircularProgress />
@@ -87,12 +110,17 @@ const Groups = () => {
                                         primary={group.name}
                                         secondary={group.description}
                                     />
+                                    {group.isManager
+                                        ? <ListItemSecondaryAction>
+                                            <IconButton edge="end" aria-label="edit" onClick={() => handleEditMode(!isEditMode)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                        : ''}
                                 </ListItem>
                             )
                         })
                     }
-
-
                 </List>
             </>
         );

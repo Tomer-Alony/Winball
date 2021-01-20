@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
+import { model, Model } from 'mongoose';
+import { ILeague } from '../../models/League';
 
 const router = Router();
-const League = mongoose.model('Leagues');
+const League: Model<ILeague> = model('Leagues');
 
 router.get('/', async (req, res) => {
-    const groups = await League.find({}); 
+    const groups = await League.find({});
     res.json(groups);
 });
 

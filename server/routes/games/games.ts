@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
+import { model, Model } from 'mongoose';
+import { IGames } from '../../models';
 
 const router = Router();
-const Games = mongoose.model('Games');
+const Games: Model<IGames> = model('Games');
 
 router.get('/', async (req, res) => {
-    const games = await Games.find({}); 
+    const games = await Games.find({});
     res.json(games);
 });
 

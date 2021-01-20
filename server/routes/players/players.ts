@@ -1,19 +1,20 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
+import { model, Model, Types } from 'mongoose';
+import { IUser } from '../../models/User';
 
 const router = Router();
-const Users = mongoose.model('Users');
+const Users: Model<IUser> = model('Users');
 
 router.post('/', async (req, res) => {
     const { playersIds } = req.body;
     const playersObjectIds = playersIds.map(playerId => {
-        return mongoose.Types.ObjectId(playerId);
+        return Types.ObjectId(playerId);
     });
-            
+
     Users.find({
         '_id': {
             $in:
-            playersObjectIds
+                playersObjectIds
         }
     }).exec(async (err, result) => {
         if (err) {

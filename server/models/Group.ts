@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
 
-interface IPlayer {
+interface IPlayer extends Document  {
     points: number,
     bullseye: number,
     side: number,
