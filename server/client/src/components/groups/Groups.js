@@ -129,7 +129,7 @@ const Groups = () => {
     const renderGroupsDetailsLayout = () => {
         return (
             <div>
-                { !isLoading
+                { !isLoading && !!selectedGroup
                     ? <GroupDisplay group={selectedGroup} />
                     : ''
                 }
