@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as _ from 'lodash';
-import axios from 'axios';
 import { makeStyles, WithStyles, withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,15 +8,16 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Group, PlayerMetadata, PlayerScores } from '../../../modles/Group';
+import { Group, PlayerMetadata } from '../../../modles/Group';
 import UserData from './UserData';
 
 interface GroupState {
-    playersData: PlayerMetadata
+
 }
 
 interface GroupProps extends WithStyles {
-    group: Group
+    group: Group,
+    playersMeta: PlayerMetadata
 }
 
 const useStyles = makeStyles({
@@ -55,62 +54,34 @@ const columns = [
 ];
 
 export default function GroupDisplay(props: GroupProps, state: GroupState) {
-    const [playersMetaData, setPlayersMetadata] = useState<PlayerMetadata>(new Map<string, any>());
-    const [isLoading, setIsLoading] = useState(true);
 
-    const { group } = props;
+    const { group, playersMeta } = props;
     const classes = useStyles();
 
     group.players = _.sortBy(group.players, ['points', 'bullseye', 'side']).reverse();
-    useEffect(() => {
-        if (group) {
-            const fetchData = async () => {
-                var result = await axios(
-                    '/api/players/', {
-                    method: 'POST',
-                    data: {
-                        playersIds: group.players.map((currPlayer: PlayerScores) => {
-                            return currPlayer.playerId;
-                        })
-                    }
-                }
-                );
-                var playersMap = new Map();
-                await result.data.map(player => {
-                    playersMap.set(player._id, player);
-                })
-
-                setPlayersMetadata(playersMap);
-                setIsLoading(false);
-            };
-
-            if(isLoading) fetchData();
-        }
-    }, []);
 
     return (
         <>
-            {isLoading
-                ? <CircularProgress />
-                : <Paper className={classes.root}>
-                    <TableContainer className={classes.container}>
-                        <Table stickyHeader aria-label="Players table">
-                            <TableHead>
-                                <TableRow>
-                                    {columns.map((column) => (
-                                        <TableCell
-                                            key={column.id}
-                                            //@ts-ignore
-                                            style={{ width: 'calc(100%/6)' }}
-                                        >
-                                            {column.label}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {group.players.map((currPlayer) => {
-                                    const currPlayerMetadata = playersMetaData.get(currPlayer.playerId);
+            <Paper className={classes.root}>
+                <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label="Players table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        //@ts-ignore
+                                        style={{ width: 'calc(100%/6)' }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {group.players.map((currPlayer) => {
+                                if (playersMeta.get(currPlayer.playerId)) {
+                                    const currPlayerMetadata = playersMeta.get(currPlayer.playerId);
                                     return (
                                         <TableRow>
                                             <TableCell key={'player' + currPlayer.playerId} className={classes.tableCell} >
@@ -130,13 +101,13 @@ export default function GroupDisplay(props: GroupProps, state: GroupState) {
                                             </TableCell>
                                         </TableRow>
                                     );
-                                })
                                 }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-            }
+                            })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </>
     );
 }
