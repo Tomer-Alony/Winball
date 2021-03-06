@@ -38,26 +38,43 @@ const useStyles = makeStyles((theme) =>
 const Groups = () => {
     const [groupsData, setGroupsData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedGroup, setSelectedGroup] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [playersMeta, setPlayersMeta] = useState(new Map());
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(
-                '/api/groups/all',
-            );
+    useEffect(async () => {
+        const allGroupsPromise = await axios(
+            '/api/groups/all',
+        );
 
-            await setGroupsData(result.data);
-            await setSelectedGroup(result.data[0]);
+        setGroupsData(allGroupsPromise.data);
+        setSelectedGroup(allGroupsPromise.data[0]);
+    }, []);
+
+    useEffect(async () => {
+        if (selectedGroup) {
+            const playersMetaPromise = await axios(
+                '/api/players/', {
+                method: 'POST',
+                data: {
+                    playersIds: selectedGroup.players.map((currPlayer) => {
+                        return currPlayer.playerId;
+                    })
+                }
+            });
+
+            var playersMap = new Map();
+            await playersMetaPromise.data.map(player => {
+                playersMap.set(player._id, player);
+            });
+            setPlayersMeta(playersMap);
             setIsLoading(false);
-        };
-
-        if (isLoading) fetchData();
-    });
+        }
+    }, [selectedGroup])
 
     const classes = useStyles();
 
-    const handleGroupSelection = (group) => {
+    const handleGroupSelection = async (group) => {
         setSelectedGroup(group);
     }
 
@@ -86,10 +103,10 @@ const Groups = () => {
         return (
             <>
                 <AddGroupDialog handleNewGroup={handleNewGroup} />
-                <EditGroupDialog isOpen={isEditMode} 
-                                 handleIsOpen={handleEditMode}
-                                 group={selectedGroup}
-                                 handleUpdatedGroup={handleUpdatedGroup}/>
+                <EditGroupDialog isOpen={isEditMode}
+                    handleIsOpen={handleEditMode}
+                    group={selectedGroup}
+                    handleUpdatedGroup={handleUpdatedGroup} />
                 <List className={classes.root}>
                     {isLoading
                         ? <CircularProgress />
@@ -130,8 +147,7 @@ const Groups = () => {
         return (
             <div>
                 { !isLoading && !!selectedGroup
-                    ? <GroupDisplay group={selectedGroup} />
-                    : ''
+                    && <GroupDisplay group={selectedGroup} playersMeta={playersMeta} />
                 }
             </div>
         );
