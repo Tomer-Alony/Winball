@@ -67,21 +67,23 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
 
     return (
         <>
-        <Paper className={classes.gameContainer}>
-            <div>{moment(startDate).format('YYYY-M-D')}</div>
-            <div>{moment(startTime).format('HH:mm')}</div>
-            <div className={classes.details}> 
-                <Typography variant="body1" gutterBottom>{teamAName}</Typography>
-                <img className={classes.pics} src={picAPath}></img>
-                <div className={classes.guessContent}>
-                    <TextField id="outlined-basic" className={classes.guess} variant="outlined" InputProps={{className: classes.input }}/>
-                    <Typography variant="body2" gutterBottom>:</Typography>
-                    <TextField id="outlined-basic" className={classes.guess} variant="outlined" InputProps={{className: classes.input }}/>
+            <Paper className={classes.gameContainer}>
+                <div>{moment(startDate).format('YYYY-M-D')}</div>
+                <div>{moment(startTime).format('HH:mm')}</div>
+                <div className={classes.details}>
+                    <Typography variant="body1" gutterBottom>{teamAName}</Typography>
+                    <img className={classes.pics} src={picAPath}></img>
+                    <div className={classes.guessContent}>
+                        <TextField id="outlined-basic" className={classes.guess} variant="outlined"
+                                   InputProps={{className: classes.input}}/>
+                        <Typography variant="body2" gutterBottom>:</Typography>
+                        <TextField id="outlined-basic" className={classes.guess} variant="outlined"
+                                   InputProps={{className: classes.input}}/>
+                    </div>
+                    <img className={classes.pics} src={picBPath}></img>
+                    <Typography variant="body1" gutterBottom>{teamBName}</Typography>
                 </div>
-                <img className={classes.pics} src={picBPath}></img>
-                <Typography variant="body1" gutterBottom>{teamBName}</Typography>
-            </div>
-        </Paper>
+            </Paper>
         </>
     );
 };
