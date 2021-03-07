@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import AlertMassage from "../AlertMessage";
 import Socket from "../../helpers/Socket";
 import {useSelector} from "react-redux";
+import {cleanup} from "@testing-library/react";
 
 
 interface GameState {
@@ -36,6 +37,17 @@ export default function Games(props: GameProps, state: GameState) {
     const [status, setStatusBase] = useState("");
     const user = useSelector((state) => state.auth);
 
+    const updateBets = () => {
+        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
+    }
+
+    const handleMessages = (msg: string) => {
+        setStatusBase( msg )
+    }
+
+    const socket = new Socket(() => {}, handleMessages);
+    socket.connect();
+
     useEffect(() => {
         if (games.length === 0) {
             const fetchData = async () => {
@@ -51,18 +63,12 @@ export default function Games(props: GameProps, state: GameState) {
 
             if(isLoading) fetchData();
         }
+
+        return function cleanup() {
+            socket.disconnect()
+        }
     }, []);
 
-    const updateBets = () => {
-        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
-    }
-
-    const handleMessages = (msg: string) => {
-        setStatusBase( msg )
-    }
-
-    const socket = new Socket(() => {}, handleMessages);
-    socket.connect();
 
     return (
         <div style={{ textAlign: 'center' }} className={classes.root}>
