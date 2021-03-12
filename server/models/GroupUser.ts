@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import {IBets} from "./Bets";
+import {IBet} from "./Bets";
 
 export interface IGroupUser extends Document {
     score: number;
     groupId: String;
     playerId: String,
-    userBets: IBets[]
+    userBets: IBet[]
 }
 
 const GroupUserSchema: Schema = new Schema({

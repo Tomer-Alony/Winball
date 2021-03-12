@@ -1,8 +1,13 @@
-import {makeStyles, MenuItem, Select} from "@material-ui/core";
+import {createStyles, makeStyles, MenuItem, Select, Typography} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import ScoreDisplay from "./ScoreDisplay";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 
-const useStyles = makeStyles(theme => ({
+const padding = 20;
+
+const useStyles = makeStyles(theme => createStyles({
     root: {
         width: '100%',
         fontFamily: theme.typography.fontFamily,
@@ -11,8 +16,29 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '100%',
     },
     select: {
-        minWidth: 200,
-        minHeight: 50
+        width: '100%',
+    },
+    groupCard: {
+        height: `${window.innerHeight - 80}px`,
+        spacing: 0,
+        padding: 12,
+        flexDirection: 'column',
+    },
+    detailsCard: {
+        padding: `${padding}px`,
+        height: `${window.innerHeight - 80 - (padding * 2)}px`,
+    },
+    scoresTable: {
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        justifyContent: "center",
+        alignContent: "center",
+        flip: false,
+        marginTop: 24,
+    },
+    scoreDay: {
+        marginTop: 12,
     }
 }));
 
@@ -20,6 +46,7 @@ const Scores = () => {
     const classes = useStyles();
     const [groupsData, setGroupsData] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
+    const [groupBets, setGroupBets] = useState({} as { bets: any, games: any });
 
     useEffect(() => {
         const allGroupsPromise = async () => {
@@ -32,21 +59,28 @@ const Scores = () => {
     }, []);
 
     const fetchGroupBets = async (groupId: string) => {
-        const bets = await axios.get(`/api/bets/${groupId}`)
-        console.log(bets.data);
+        const betsData = await axios.get(`/api/bets/${groupId}`)
+
+        const { bets, games } = betsData?.data
+        const groupedByDate = bets?.reduce((acc, cur) => {
+            if (acc[cur.date]) {
+                acc[cur.date].push(cur);
+            } else {
+                acc[cur.date] = [cur];
+            }
+            return {...acc};
+        }, {})
+
+        setGroupBets({ bets: groupedByDate, games });
     }
 
     const handleSelect = (event: any) => {
-        setSelectedGroup(event.target.value);
+        setSelectedGroup(groupsData.find(g => g._id === event.target.value));
         fetchGroupBets(event.target.value);
     }
 
-    return (
-        <div className={ classes.root }>
-            Scores Page
-            <div>
-                {selectedGroup}
-            </div>
+    const renderSelector = () => {
+        return (
             <Select
                 className={classes.select}
                 onChange={handleSelect}
@@ -58,8 +92,56 @@ const Scores = () => {
                     )
                 }) }
             </Select>
+        );
+    };
+
+    const renderGroupDetails = () => {
+        const dates = Object.keys(groupBets.bets || {});
+        return (
+            <div className={classes.scoresTable}>
+                {
+                    dates.length ? dates.map(date => {
+                        return (
+                            <div className={classes.scoreDay}>
+                                <Typography variant="h5">{new Date(date).toDateString()}</Typography>
+                                {
+                                    groupBets.bets[date]?.length && groupBets.bets[date]?.map(bet => {
+                                    return (
+                                        <ScoreDisplay bet={bet} games={groupBets.games}/>
+                                    )
+                                })}
+                            </div>
+                        )
+                    }) : <Typography variant="h5">No bets for this group</Typography>
+                }
+            </div>
+        );
+    }
+
+    const renderLayout = () => {
+        return (
+            <Grid container spacing={1} alignItems="stretch">
+                <Grid item lg={2} xl={2}>
+                    <Card className={classes.groupCard}>
+                        {renderSelector()}
+                    </Card>
+                </Grid>
+                <Grid item lg={10} xl={10}>
+                    <Card className={classes.detailsCard}>
+                        <Typography variant="h2">Bets</Typography>
+                        <Typography variant="h3" color="textSecondary">{selectedGroup?.name || "Select a group"}</Typography>
+                        {renderGroupDetails()}
+                    </Card>
+                </Grid>
+            </Grid>
+        )
+    }
+
+    return (
+        <div className={classes.root}>
+            {renderLayout()}
         </div>
-    );
+    )
 };
 
 export default Scores;

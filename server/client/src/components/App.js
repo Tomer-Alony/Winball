@@ -18,7 +18,7 @@ const App = () => {
           <Route exact path='/' component={Landing} />
           <Route exact path='/Groups' component={Groups} />
           <Route exact path='/Games' component={Games} />
-          <Route exact path='/Scores' component={Scores} />
+          <Route exact path='/Bets' component={Scores} />
         </div>
       </BrowserRouter>
     </div>

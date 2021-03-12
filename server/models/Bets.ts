@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IBets extends Document {
+export interface IBet extends Document {
     gameId: String,
     playerId: String,
     bet: String,
@@ -12,4 +12,4 @@ const BetsSchema: Schema = new Schema({
     bet: { type: String, required: true },
 });
 
-export default mongoose.model<IBets>('Bets', BetsSchema);
+export default mongoose.model<IBet>('Bets', BetsSchema);

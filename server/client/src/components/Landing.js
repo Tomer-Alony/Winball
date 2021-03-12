@@ -26,7 +26,7 @@ const Landing = () => {
   const user = useSelector((state) => state.auth);
   if (user) {
     return (
-      <Redirect to='/scores' />
+      <Redirect to='/Groups' />
     );
   } else {
     return (

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
-import {IBets} from "./Bets";
+import {IBet} from "./Bets";
 
 interface IPlayer extends Document  {
     playerId: mongoose.Types.ObjectId
@@ -15,7 +15,7 @@ export interface IGroup extends Document {
     name: String;
     description: String;
     players: IPlayer[];
-    userBets: IBets[]
+    userBets: IBet[]
 }
 
 const GroupSchema: Schema = new Schema({

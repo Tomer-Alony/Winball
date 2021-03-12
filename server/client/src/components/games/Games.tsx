@@ -9,6 +9,7 @@ import AlertMassage from "../AlertMessage";
 import Socket from "../../helpers/Socket";
 import {useSelector} from "react-redux";
 import {cleanup} from "@testing-library/react";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 interface GameState {
@@ -36,7 +37,6 @@ export default function Games(props: GameProps, state: GameState) {
     const [teams, setTeams] = useState([]);
     const [status, setStatusBase] = useState("");
     const user = useSelector((state) => state.auth);
-
     const updateBets = () => {
         socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
     }
@@ -74,7 +74,9 @@ export default function Games(props: GameProps, state: GameState) {
         <div style={{ textAlign: 'center' }} className={classes.root}>
             {status ? <AlertMassage key={Math.random()} message={status} onClose={() => setStatusBase("")} /> : null}
             <h1>Games</h1>
-            <Button onClick={updateBets} color="primary">Update bets</Button>
+            {isLoading ? <CircularProgress /> :
+                <Button onClick={updateBets} color="primary">Update bets</Button>
+            }
             {games.map((game, i) => (
                 <GameDisplay
                     key={i}
