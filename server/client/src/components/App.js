@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { Landing, Header } from './';
-import Groups from './groups/Groups'
-import Games from './games/Games'
+import { Landing, Header, Groups, Scores, Games } from './';
 import { useDispatch } from 'react-redux';
 import * as actions from '../actions';
 
@@ -20,6 +18,7 @@ const App = () => {
           <Route exact path='/' component={Landing} />
           <Route exact path='/Groups' component={Groups} />
           <Route exact path='/Games' component={Games} />
+          <Route exact path='/Bets' component={Scores} />
         </div>
       </BrowserRouter>
     </div>

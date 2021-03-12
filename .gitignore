@@ -3,5 +3,5 @@ server/dist
 server/client/node_modules
 **/package-lock.json
 config/dev.js
-
+**/.idea
 **/.DS_Store

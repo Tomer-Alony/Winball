@@ -11,28 +11,26 @@ router.post('/', async (req, res) => {
         return Types.ObjectId(playerId);
     });
 
-    Users.find({
+    await Users.find({
         '_id': {
             $in:
-                playersObjectIds
+            playersObjectIds
         }
-    }).exec(async (err, result) => {
+    }).exec( (err, result) => {
         if (err) {
             console.log(err.message);
-        }
-        else {
+        } else {
             res.status(200).send(result);
         }
     });
 })
 
 router.get('/all', async (req, res) => {
-    Users.find({}).exec(async (err, result) => {
+    await Users.find({}).exec( (err, result) => {
         if (err) {
             console.log(err.message);
             res.status(500).send('an error occured while trying to query all users');
-        }
-        else {
+        } else {
             res.json(result);
         }
     });

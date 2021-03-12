@@ -42,6 +42,9 @@ const Header = () => {
           <Button color="inherit" className={classes.loginButton} key={2}>
             <Link to={'/Games'} className={classes.a}>Games</Link>
           </Button>,
+          <Button color="inherit" className={classes.loginButton} key={2}>
+            <Link to={'/Bets'} className={classes.a}>Bets</Link>
+          </Button>,
           <Button color="inherit" className={classes.loginButton} key={3}>
             <a href='/api/logout' className={classes.a}>Logout</a>
           </Button>
@@ -56,7 +59,7 @@ const Header = () => {
         <div className={classes.toolbar}>
           <Toolbar>
             
-          <Link to={user ? '/home' : '/'} className={classes.a}>
+          <Link to={'/'} className={classes.a}>
             <Typography variant="h4">
               Winball
             </Typography>
