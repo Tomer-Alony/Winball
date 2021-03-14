@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
 
 interface StatisticsState {
 
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Statistics(props: StatisticsProps, state: StatisticsState) {
+const Statistics = (props: StatisticsProps, state: StatisticsState) => {
     const classes = useStyles();
 
     const { } = props;
@@ -30,3 +29,5 @@ export default function Statistics(props: StatisticsProps, state: StatisticsStat
         </div>
     );
 };
+
+export default Statistics;
