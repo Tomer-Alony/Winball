@@ -3,6 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { Landing, Header } from './';
 import Groups from './groups/Groups'
 import Games from './games/Games'
+import Staticits from './statistics/Statistics'
 import { useDispatch } from 'react-redux';
 import * as actions from '../actions';
 
@@ -20,6 +21,7 @@ const App = () => {
           <Route exact path='/' component={Landing} />
           <Route exact path='/Groups' component={Groups} />
           <Route exact path='/Games' component={Games} />
+          <Route exact path='/Statistics' component={Staticits} />
         </div>
       </BrowserRouter>
     </div>

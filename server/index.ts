@@ -12,6 +12,8 @@ const keys = require('./config/dev');
 
 const app: Application = express();
 
+var cors = require('cors')
+
 app.use(
     cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -22,6 +24,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.json());
+app.use(cors());
 
 const db = keys.mongoURI;
 Connect({ db })

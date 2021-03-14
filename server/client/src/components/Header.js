@@ -43,6 +43,9 @@ const Header = () => {
             <Link to={'/Games'} className={classes.a}>Games</Link>
           </Button>,
           <Button color="inherit" className={classes.loginButton} key={3}>
+          <Link to={'/Statistics'} className={classes.a}>Statistics</Link>
+        </Button>,
+          <Button color="inherit" className={classes.loginButton} key={4}>
             <a href='/api/logout' className={classes.a}>Logout</a>
           </Button>
         ];
