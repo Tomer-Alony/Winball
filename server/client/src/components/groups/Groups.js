@@ -37,8 +37,8 @@ const useStyles = makeStyles((theme) =>
 
 const Groups = () => {
     const [groupsData, setGroupsData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedGroup, setSelectedGroup] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
     const [playersMeta, setPlayersMeta] = useState(new Map());
 
@@ -146,7 +146,7 @@ const Groups = () => {
     const renderGroupsDetailsLayout = () => {
         return (
             <div>
-                { !isLoading
+                { !isLoading && !!selectedGroup
                     && <GroupDisplay group={selectedGroup} playersMeta={playersMeta} />
                 }
             </div>

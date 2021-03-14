@@ -41,7 +41,7 @@ const columns = [
         align: 'right',
         format: (value: any) => value.toLocaleString('en-US'),
     },
-    {
+        {
         id: 'bullseye',
         label: 'Bullseye',
         format: (value: any) => value.toFixed(2),

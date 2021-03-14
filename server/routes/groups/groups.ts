@@ -2,12 +2,10 @@ import { Router } from 'express';
 import { model, Model, Types } from 'mongoose';
 import { IUser } from '../../models/User';
 import { IGroup } from '../../models/Group';
-import { IGroupUser } from '../../models/GroupUser';
 
 const router = Router();
 const Group: Model<IGroup> = model('Groups');
 const Users: Model<IUser> = model('Users');
-const GroupUser: Model<IGroupUser> = model('GroupUser');
 
 const parsePlayerScore = (playerId) => {
     return {
@@ -20,6 +18,7 @@ const parsePlayerScore = (playerId) => {
 }
 
 router.get('/all', async (req, res) => {
+
     if (!req.user) {
         Group.find({
         }).exec(async (err, result) => {
@@ -35,7 +34,7 @@ router.get('/all', async (req, res) => {
     } else {
         // @ts-ignore
         const loggedUser = await Users.find({ googleId: req.user.googleId });
-        Group.find({
+        await Group.find({
             'players':
             {
                 $elemMatch:
@@ -45,8 +44,7 @@ router.get('/all', async (req, res) => {
             if (err) {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
-            }
-            else {
+            } else {
                 const resp = result.map((group) => {
                     return Object.assign(group.toJSON(),
                         {

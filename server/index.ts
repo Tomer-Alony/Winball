@@ -3,9 +3,9 @@ import './models'
 import routes from './routes'
 import passport from 'passport'
 import './services/Passport'
-
 import Connect from './db/mongoose'
 import authRouter from './routes/authRouter'
+import io from './services/Socket'
 
 const cookieSession = require('cookie-session')
 const keys = require('./config/dev');
@@ -33,6 +33,7 @@ app.use('/api', routes);
 app.use('/auth', authRouter);
 
 const port = process.env.PORT || 8000
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is listening at ${port}`)
 })
+io(server);
