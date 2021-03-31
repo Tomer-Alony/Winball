@@ -55,7 +55,7 @@ export default createMuiTheme({
           contrastText: '#fff',
         },
         backgroundColor: {
-          main: '#e7e7de'
+          main: '#403f3f'
         }
     },
 });
