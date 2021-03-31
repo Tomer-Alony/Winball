@@ -1,4 +1,4 @@
-import { makeStyles, Paper, TextField, Typography, WithStyles } from "@material-ui/core";
+import {makeStyles, Paper, Snackbar, TextField, Typography, WithStyles} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Game } from '../../modles/Game';
 import axios from 'axios';
@@ -6,6 +6,12 @@ import GameDisplay from './GameDisplay';
 import FootballPic from '../../static/images/groups/football.png';
 import moment from "moment";
 import GameDate from './GameDate';
+import Button from "@material-ui/core/Button";
+import AlertMassage from "../AlertMessage";
+import Socket from "../../helpers/Socket";
+import {useSelector} from "react-redux";
+import {cleanup} from "@testing-library/react";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 interface GameState {
@@ -40,7 +46,20 @@ export default function Games(props: GameProps, state: GameState) {
     const [games, setGames] = useState([]);
     const [teams, setTeams] = useState([]);
     var gamesParse: {[key: string] : Game[]} = {};
-    
+    const [status, setStatusBase] = useState("");
+    const user = useSelector((state) => state.auth);
+    const updateBets = () => {
+        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
+    }
+
+    const handleMessages = (msg: string) => {
+        setStatusBase( msg )
+    }
+
+    const socket = new Socket(() => {}, handleMessages);
+    socket.connect();
+
+
     useEffect(() => {
         if (games.length === 0) {
             const fetchData = async () => {
@@ -56,13 +75,21 @@ export default function Games(props: GameProps, state: GameState) {
 
             if(isLoading) fetchData();
         }
+
+        return function cleanup() {
+            socket.disconnect()
+        }
     }, []);
 
     games.map(game => gamesParse[new Date(game.startDate).getTime().toString()] = [game]);
 
     return (
         <div style={{ textAlign: 'center' }} className={classes.root}>
+            {status ? <AlertMassage key={Math.random()} message={status} onClose={() => setStatusBase("")} /> : null}
             <div className={classes.title}>What's your guess?</div>
+            {isLoading ? <CircularProgress /> :
+                <Button onClick={updateBets} color="primary">Update bets</Button>
+            }
             {/* {Object.keys(gamesParse).map(date => (<GameDate startDate={date} gamesInDate={gamesParse[date]}></GameDate>))} */}
             {games.filter(game => new Date(game.startDate).getTime() - new Date().getTime() > 0)
             .map(game => (<GameDisplay teamAName={game.teamAId} 

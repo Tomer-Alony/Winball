@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import axios from 'axios';
-import mongoose from 'mongoose';
+import { model, Model } from 'mongoose';
+import { ITeams } from '../../models/Teams';
+import { IGames } from '../../models/Games';
 
 const router = Router();
-const Teams = mongoose.model('Teams');
-const Games = mongoose.model('Games');
+const Teams: Model<ITeams> = model('Teams');
+const Games: Model<IGames> = model('Games');
 router.get('/teams', async (req, res) => {
     const teams = await axios('http://localhost:5000/teams');
 
@@ -57,7 +59,7 @@ const calcWonTeam = (score: String, teamA: String, teamB: String): String => {
             return teamB;
         }
     }
-    
+
     return '';
 }
 export default router;

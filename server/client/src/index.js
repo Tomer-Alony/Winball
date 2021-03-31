@@ -11,8 +11,6 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import axios from 'axios';
 window.axios = axios;
 
-
-
 const store = createStore(
   reducers,
   {},
