@@ -15,7 +15,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 interface GameState {
-
+    
 }
 
 interface GameProps extends WithStyles {
@@ -47,9 +47,9 @@ export default function Games(props: GameProps, state: GameState) {
     const [teams, setTeams] = useState([]);
     var gamesParse: {[key: string] : Game[]} = {};
     const [status, setStatusBase] = useState("");
-    const user = useSelector((state) => state.auth);
+    const user = useSelector((state) => (state as any).auth);
     const updateBets = () => {
-        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
+        // socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
     }
 
     const handleMessages = (msg: string) => {
