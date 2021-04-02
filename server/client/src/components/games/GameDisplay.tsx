@@ -1,12 +1,15 @@
 import { makeStyles, Paper, TextField, Typography } from "@material-ui/core";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 interface GameDataState {
 
 }
 
 interface GameDataProps {
+   gameId: string,
    teamAName: string,
    teamBName: string,
    startDate: Date,
@@ -66,12 +69,43 @@ const useStyles = makeStyles(theme => ({
 
 export default function GameDisplay(props: GameDataProps, state: GameDataState) {
     const classes = useStyles();
-    const { teamAName, teamBName, startDate, startTime, picAPath, picBPath} = props;
+    const {gameId, teamAName, teamBName, startDate, startTime, picAPath, picBPath} = props;
+    const [betTeamA, setBetTeamA] = useState("");
+    const [betTeamB, setBetTeamB] = useState("");
+    const user = useSelector((state) => (state as any).auth);
 
     const date = moment(startDate).format('D-M-YY');
     var time = moment(startTime).format('HH:mm');
     if (time == "Invalid date") {
         time = "";
+    }
+   
+    const onChangeBet = () => {
+        
+        const betFormat = betTeamA + " - " + betTeamB;
+
+        const bet = {
+            gameId: gameId,
+            playerId: user._id,
+            bet: betFormat,
+            playerName: user.displayName
+        }
+
+        axios.post('/api/bets/addBet', {bet})
+        .then(res => {
+            console.log(res)
+        })
+    }
+
+    const onChangeBetA = async (event: any) => {
+        await setBetTeamA(event.target.value);
+        console.log(betTeamA);
+        onChangeBet()
+    }
+
+    const onChangeBetB = async (event: any) => {
+        await setBetTeamB(event.target.value);
+        onChangeBet()
     }
     
     return (
@@ -83,9 +117,15 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
                 <Typography variant="body1" className={classes.team} gutterBottom>{teamAName}</Typography>
                 <img className={classes.pics} src={picAPath}></img>
                 <div className={classes.guessContent}>
-                    <TextField id="outlined-basic" className={classes.guess} variant="outlined" InputProps={{className: classes.input }}/>
+                    <TextField id="outlined-basic" className={classes.guess} 
+                                variant="outlined" InputProps={{className: classes.input }}
+                                value={betTeamA}
+                                onChange={onChangeBetA}/>
                     <Typography variant="body2" gutterBottom>:</Typography>
-                    <TextField id="outlined-basic" className={classes.guess} variant="outlined" InputProps={{className: classes.input }}/>
+                    <TextField id="outlined-basic" className={classes.guess} 
+                                variant="outlined" InputProps={{className: classes.input }}
+                                value={betTeamB}
+                                onChange={onChangeBetB}/>
                 </div>
                 <img className={classes.pics} src={picBPath}></img>
                 <Typography variant="body1" className={classes.team} gutterBottom>{teamBName}</Typography>

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import {IBet} from "./Bets";
+import {IBet} from "./Bet";
 
 export interface IGroupUser extends Document {
     score: number;

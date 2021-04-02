@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
-import {IBet} from "./Bets";
+import {IBet} from "./Bet";
 
 interface IPlayer extends Document  {
     playerId: mongoose.Types.ObjectId

@@ -4,11 +4,11 @@ import {IBet, IGames, IGroup, IUser} from '../../models';
 
 const router = Router();
 const Groups: Model<IGroup> = model('Groups');
-const Bets: Model<IBet> = model('Bets');
+const Bet: Model<IBet> = model('Bet');
 const Games: Model<IGames> = model('Games');
 
 router.get('/', async (req, res) => {
-    const bets = await Bets.find({});
+    const bets = await Bet.find({});
     res.json(bets);
 });
 
@@ -31,6 +31,14 @@ router.get('/:groupId', async (req, res) => {
     }, {})
 
     res.json({ bets, games });
+});
+
+router.post('/addBet', async (req, res) => {
+    const doc = new Bet({gameId: req.body.bet.gameId, 
+                          playerId: req.body.bet.playerId,
+                          bet: req.body.bet.bet,
+                          playerName: req.body.playerName})
+    doc.save();
 });
 
 export default router;
