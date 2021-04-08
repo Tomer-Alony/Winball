@@ -62,4 +62,13 @@ const calcWonTeam = (score: String, teamA: String, teamB: String): String => {
 
     return '';
 }
+
+export const getScore = async (teamA: String, teamB: String) => {
+    const score = await axios('http://localhost:5000/score/' + teamA + '/' + teamB);
+
+    return new Promise((resolve, reject)=> {
+        return resolve(score.data);
+    })
+};
+
 export default router;
