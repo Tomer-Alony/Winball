@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: {
     display: "flex",
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: "#5F52B6"
   },
   loginButton: {
     alignSelf: "right",

@@ -22,15 +22,21 @@ const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             flexGrow: 1,
+            color: '#ffffff'
         },
         groupCard: {
             height: `${window.innerHeight - 80}px`,
             spacing: 0,
             direction: 'column',
+            backgroundColor: '#403f3f',
         },
         detailsCard: {
             padding: `${padding}px`,
             height: `${window.innerHeight - 80 - (padding * 2)}px`,
+            backgroundColor: '#2b2b2b',
+        },
+        groupDetails: {
+            color: "#ffffff"
         }
     }),
 );
