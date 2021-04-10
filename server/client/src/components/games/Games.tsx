@@ -49,7 +49,7 @@ export default function Games(props: GameProps, state: GameState) {
     const [status, setStatusBase] = useState("");
     const user = useSelector((state) => (state as any).auth);
     const updateBets = () => {
-        // socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
+        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
     }
 
     const handleMessages = (msg: string) => {
@@ -58,7 +58,6 @@ export default function Games(props: GameProps, state: GameState) {
 
     const socket = new Socket(() => {}, handleMessages);
     socket.connect();
-
 
     useEffect(() => {
         if (games.length === 0) {
@@ -92,12 +91,12 @@ export default function Games(props: GameProps, state: GameState) {
             }
             {/* {Object.keys(gamesParse).map(date => (<GameDate startDate={date} gamesInDate={gamesParse[date]}></GameDate>))} */}
             {games.filter(game => new Date(game.startDate).getTime() - new Date().getTime() > 0)
-            .map(game => (<GameDisplay teamAName={game.teamAId} 
-                                             teamBName={game.teamBId} 
+            .map(game => (<GameDisplay teamAName={game.teamAId}
+                                             teamBName={game.teamBId}
                                              startDate={game.startDate}
                                              startTime={(game.startTime) ? game.startTime : ""}
                                              picAPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamAId))?.picPath || FootballPic : ""}
-                                             picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""}></GameDisplay>))}
+                                             picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""} />))}
         </div>
     );
 };
