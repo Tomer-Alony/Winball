@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { model, Model, Types } from 'mongoose';
-import { IUser } from '../../models/User';
-import { IGroup } from '../../models/Group';
+import {Router} from 'express';
+import {model, Model, Types} from 'mongoose';
+import {IUser} from '../../models/User';
+import {IGroup} from '../../models/Group';
 
 const router = Router();
 const Group: Model<IGroup> = model('Groups');
@@ -19,9 +19,18 @@ const parsePlayerScore = (playerId) => {
 
 router.get('/all', async (req, res) => {
 
+    // console.warn(`name: ${req.query.name}, desc: ${req.query.desc}, isCommander: ${req.query.commander}, `)
+    const conditions = { } as any;
+    if (req.query.name) {
+        conditions.name = { '$regex': req.query.name, "$options": "ig" };
+    }
+    if (req.query.desc) {
+        conditions.description = { '$regex': req.query.desc, "$options": "ig" };
+    }
+    // console.warn(conditions)
+
     if (!req.user) {
-        Group.find({
-        }).exec(async (err, result) => {
+        Group.find(...conditions).exec(async (err, result) => {
             if (err) {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
@@ -35,6 +44,7 @@ router.get('/all', async (req, res) => {
         // @ts-ignore
         const loggedUser = await Users.find({ googleId: req.user.googleId });
         await Group.find({
+            ...conditions,
             'players':
             {
                 $elemMatch:
@@ -45,13 +55,18 @@ router.get('/all', async (req, res) => {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
             } else {
+                console.log(req.query.commander)
+                const manager = req.query.commander && req.query.commander === "true";
                 const resp = result.map((group) => {
                     return Object.assign(group.toJSON(),
                         {
                             'isManager': group.get('manager_id') ===
                                 loggedUser[0]._id.toString()
                         });
-                });
+                }).filter(g => req.query.commander !== undefined ?
+                    (g.isManager && manager) ||
+                    (!g.isManager && !manager)
+                    : true);
                 res.json(resp);
             }
         });
