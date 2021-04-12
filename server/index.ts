@@ -6,6 +6,7 @@ import './services/Passport'
 import Connect from './db/mongoose'
 import authRouter from './routes/authRouter'
 import io from './services/Socket'
+import { scoresSchedule } from './services/ScoresUpdater';
 
 const cookieSession = require('cookie-session')
 const keys = require('./config/dev');
@@ -36,4 +37,6 @@ const port = process.env.PORT || 8000
 const server = app.listen(port, () => {
     console.log(`Server is listening at ${port}`)
 })
+
+scoresSchedule()
 io(server);

@@ -21,26 +21,26 @@ const parsePlayerScore = (playerId) => {
     }
 }
 
-// Map Reduce Part
-router.get('/getTotalPointsPerUser', async (req, res) => {
-    var options: MapReduceOptions<IGroupUser, string, number> = {
-        map: function() {
-            emit(this.playerId, this.score)
-        },
-        reduce: function (_keyPlayerId, valuesScores) {
-            // Returns some of points per player
-            return valuesScores.map(player => player.score).reduce((a, b) => a + b, 0);
-        }
-    };
+// // Map Reduce Part - Not working on CLOUD CLUSTER MONGODB
+// router.get('/getTotalPointsPerUser', async (req, res) => {
+//     var options: MapReduceOptions<IGroupUser, string, number> = {
+//         map: function() {
+//             emit(this.playerId, this.score)
+//         },
+//         reduce: function (_keyPlayerId, valuesScores) {
+//             // Returns some of points per player
+//             return valuesScores.map(player => player.score).reduce((a, b) => a + b, 0);
+//         }
+//     };
 
-    GroupUser.mapReduce<String, number>(
-        options, (err, results) => {
-            if (err) 
-                console.log(err);
-            return results;
-        }
-    );
-});
+//     GroupUser.mapReduce<String, number>(
+//         options, (err, results) => {
+//             if (err) 
+//                 console.log(err);
+//             return results;
+//         }
+//     );
+// });
 
 // Group By Part
 router.get('/groupsCountPerManager', async (req, res) => {
@@ -67,9 +67,18 @@ router.get('/groupsCountPerManager', async (req, res) => {
 
 router.get('/all', async (req, res) => {
 
+    // console.warn(`name: ${req.query.name}, desc: ${req.query.desc}, isCommander: ${req.query.commander}, `)
+    const conditions = { } as any;
+    if (req.query.name) {
+        conditions.name = { '$regex': req.query.name, "$options": "ig" };
+    }
+    if (req.query.desc) {
+        conditions.description = { '$regex': req.query.desc, "$options": "ig" };
+    }
+    // console.warn(conditions)
+
     if (!req.user) {
-        Group.find({
-        }).exec(async (err, result) => {
+        Group.find(...conditions).exec(async (err, result) => {
             if (err) {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
@@ -83,6 +92,7 @@ router.get('/all', async (req, res) => {
         // @ts-ignore
         const loggedUser = await Users.find({ googleId: req.user.googleId });
         await Group.find({
+            ...conditions,
             'players':
             {
                 $elemMatch:
@@ -93,13 +103,18 @@ router.get('/all', async (req, res) => {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
             } else {
+                console.log(req.query.commander)
+                const manager = req.query.commander && req.query.commander === "true";
                 const resp = result.map((group) => {
                     return Object.assign(group.toJSON(),
                         {
                             'isManager': group.get('manager_id') ===
                                 loggedUser[0]._id.toString()
                         });
-                });
+                }).filter(g => req.query.commander !== undefined ?
+                    (g.isManager && manager) ||
+                    (!g.isManager && !manager)
+                    : true);
                 res.json(resp);
             }
         });
