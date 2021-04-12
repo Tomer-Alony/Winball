@@ -1,7 +1,11 @@
 import { Router } from 'express';
-import { model, Model, Types } from 'mongoose';
+import { MapReduceOptions, model, Model, Types } from 'mongoose';
 import { IUser } from '../../models/User';
 import { IGroup } from '../../models/Group';
+import { Group } from '../../client/src/modles/Group';
+import GroupUser, { IGroupUser } from '../../models/GroupUser';
+import { EventEmitter } from 'events';
+import { emit } from 'process';
 
 const router = Router();
 const Group: Model<IGroup> = model('Groups');
@@ -16,6 +20,50 @@ const parsePlayerScore = (playerId) => {
         games: 0
     }
 }
+
+// Map Reduce Part
+router.get('/getTotalPointsPerUser', async (req, res) => {
+    var options: MapReduceOptions<IGroupUser, string, number> = {
+        map: function() {
+            emit(this.playerId, this.score)
+        },
+        reduce: function (_keyPlayerId, valuesScores) {
+            // Returns some of points per player
+            return valuesScores.map(player => player.score).reduce((a, b) => a + b, 0);
+        }
+    };
+
+    GroupUser.mapReduce<String, number>(
+        options, (err, results) => {
+            if (err) 
+                console.log(err);
+            return results;
+        }
+    );
+});
+
+// Group By Part
+router.get('/groupsCountPerManager', async (req, res) => {
+    Group.aggregate(
+        [
+            {
+                $group: {
+                    _id: "$manager_id",
+                    groupsCount: {
+                        $sum: 1
+                    }
+                }
+            }
+        ],
+        function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.json(result);
+            }
+        }
+    )
+});
 
 router.get('/all', async (req, res) => {
 
