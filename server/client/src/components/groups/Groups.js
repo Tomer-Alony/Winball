@@ -16,6 +16,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import GroupDisplay from './GroupDisplay/GroupDisplay';
 import AddGroupDialog from './GroupDisplay/AddGroupDialog';
 import EditGroupDialog from './EditGroup/EditGroupDialog';
+import {Button, MenuItem, Select, TextField, Typography} from "@material-ui/core";
 
 const padding = 20;
 const useStyles = makeStyles((theme) =>
@@ -25,15 +26,26 @@ const useStyles = makeStyles((theme) =>
             color: '#ffffff'
         },
         groupCard: {
-            height: `${window.innerHeight - 80}px`,
+            height: `${window.innerHeight - 275}px`,
             spacing: 0,
             direction: 'column',
             backgroundColor: '#403f3f',
         },
         detailsCard: {
             padding: `${padding}px`,
-            height: `${window.innerHeight - 80 - (padding * 2)}px`,
+            height: `${window.innerHeight - 130 - (padding * 2)}px`,
             backgroundColor: '#2b2b2b',
+        },
+        filtersCard: {
+            paddingTop: "12px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            marginTop: "20px",
+            marginBottom: "12px",
+            borderRadius: 0,
+            height: '100px',
+            backgroundColor: '#403f3f',
+            color: "#ffffff"
         },
         groupDetails: {
             color: "#ffffff"
@@ -47,6 +59,9 @@ const Groups = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
     const [playersMeta, setPlayersMeta] = useState(new Map());
+    const [nameFilter, setNameFilter] = useState("");
+    const [descFilter, setDescFilter] = useState("");
+    const [commanderFilter, setCommanderFilter] = useState("");
 
     useEffect(async () => {
         const allGroupsPromise = await axios(
@@ -80,8 +95,40 @@ const Groups = () => {
 
     const classes = useStyles();
 
+    const handleNameFilter = (e) => {
+        setNameFilter(e?.target?.value);
+    }
+
+    const handleDescriptionFilter = (e) => {
+        setDescFilter(e?.target?.value);
+    }
+
+    const handleCommanderFilter = (e) => {
+        setCommanderFilter(e?.target?.value);
+    }
+
     const handleGroupSelection = async (group) => {
         setSelectedGroup(group);
+    }
+
+    const handleFilter = async () => {
+        const params = {};
+        if (nameFilter) {
+            params.name = nameFilter;
+        }
+        if (commanderFilter !== undefined) {
+            params.commander = commanderFilter;
+        }
+        if (descFilter) {
+            params.desc = descFilter;
+        }
+        const allGroupsPromise = await axios(
+            '/api/groups/all',
+            { params }
+        );
+
+        setGroupsData(allGroupsPromise.data);
+        setSelectedGroup(allGroupsPromise.data[0]);
     }
 
     const handleNewGroup = (newGroup) => {
@@ -118,6 +165,7 @@ const Groups = () => {
                         ? <CircularProgress />
                         : groupsData.map(group => {
                             return (
+                                selectedGroup &&
                                 <ListItem
                                     button
                                     key={group._id}
@@ -159,15 +207,46 @@ const Groups = () => {
         );
     };
 
+    const renderFiltersLayout = () => {
+        return <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography variant="h5">Filter your group by</Typography>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div style={{paddingRight: '16px'}}>
+                    <TextField onChange={handleNameFilter} style={{borderRadius: '4px', padding: '8px', backgroundColor: 'lightgrey'}} placeholder="Name"/>
+                </div>
+                <div style={{paddingRight: '16px'}}>
+                    <TextField onChange={handleDescriptionFilter} style={{borderRadius: '4px', padding: '8px', backgroundColor: 'lightgrey'}} placeholder="Description"/>
+                </div>
+                <div style={{paddingRight: '16px'}}>
+                    <Select
+                        style={{borderRadius: '4px', padding: '8px', height:"48px", backgroundColor: 'lightgrey'}}
+                        onChange={handleCommanderFilter}
+                        variant="outlined"
+                    >
+                        <MenuItem value={undefined}>Is Mannager?</MenuItem>
+                        <MenuItem value={true}>Yes</MenuItem>
+                        <MenuItem value={false}>No</MenuItem>
+                    </Select>
+                </div>
+                <div style={{display: 'flex', flexDirection: 'column', justify: 'end'}} >
+                    <Button color="primary" style={{backgroundColor:"lightgrey"}} onClick={handleFilter}>Filter</Button>
+                </div>
+            </div>
+        </div>;
+    }
+
     const renderLayout = () => {
         return (
             <Grid container spacing={1} alignItems="stretch">
-                <Grid item lg={2} xl={2}>
+                <Grid item lg={3} xl={3}>
+                    <Card className={classes.filtersCard}>
+                        {renderFiltersLayout()}
+                    </Card>
                     <Card className={classes.groupCard}>
                         {renderGroupsLayout()}
                     </Card>
                 </Grid>
-                <Grid item lg={10} xl={10}>
+                <Grid item lg={9} xl={9}>
                     <Card className={classes.detailsCard}>
                         {renderGroupsDetailsLayout()}
                     </Card>

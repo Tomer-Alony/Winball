@@ -4,6 +4,8 @@ export interface IBet extends Document {
     gameId: String,
     playerId: String,
     bet: String,
+    playerName: String,
+    date: Date
 }
 
 const BetSchema: Schema = new Schema({

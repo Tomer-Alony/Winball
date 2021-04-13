@@ -88,10 +88,11 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
             gameId: gameId,
             playerId: user._id,
             bet: betFormat,
-            playerName: user.displayName
+            playerName: user.displayName,
+            date: new Date()
         }
 
-        axios.post('/api/bets/addBet', {bet})
+        axios.put('/api/groups/addBet', {bet})
         .then(res => {
             console.log(res)
         })

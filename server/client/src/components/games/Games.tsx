@@ -51,7 +51,7 @@ export default function Games(props: GameProps, state: GameState) {
     var gamesParse: {[key: string] : Game[]} = {};
     
     const updateBets = () => {
-        // socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
+        socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
     }
 
     const handleMessages = (msg: string) => {
@@ -60,7 +60,6 @@ export default function Games(props: GameProps, state: GameState) {
 
     const socket = new Socket(() => {}, handleMessages);
     socket.connect();
-
 
     useEffect(() => {
         if (games.length === 0) {
