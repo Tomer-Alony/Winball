@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => createStyles({
     detailsCard: {
         padding: `${padding}px`,
         height: `${window.innerHeight - 80 - (padding * 2)}px`,
+        overflowY: "auto"
     },
     scoresTable: {
         display: "flex",
@@ -103,7 +104,7 @@ const Scores = () => {
                     dates.length ? dates.map(date => {
                         return (
                             <div className={classes.scoreDay}>
-                                <Typography variant="h5">{new Date(date).toDateString()}</Typography>
+                                {/* <Typography variant="h5">{new Date(date).toDateString()}</Typography> */}
                                 {
                                     groupBets.bets[date]?.length && groupBets.bets[date]?.map(bet => {
                                     return (

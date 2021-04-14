@@ -103,7 +103,7 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
                 gameId: gameId,
                 playerId: user._id,
                 bet: betFormat,
-                playerName: user.displayName,
+                player_name: user.displayName,
                 date: new Date()
             }
     
