@@ -4,7 +4,7 @@ export interface IBet extends Document {
     playerId: String,
     gameId: String,
     bet: String,
-    playerName: String,
+    player_name: String,
     date: Date
 }
 
