@@ -1,14 +1,15 @@
 import { Router } from 'express';
-import { MapReduceOptions, model, Model, Types } from 'mongoose';
+import { isValidObjectId, MapReduceOptions, model, Model, Types } from 'mongoose';
 import { IUser } from '../../models/User';
 import { IGroup } from '../../models/Group';
-import { Group } from '../../client/src/modles/Group';
+
 import GroupUser, { IGroupUser } from '../../models/GroupUser';
 import { EventEmitter } from 'events';
 import { emit } from 'process';
+import { group } from 'node:console';
 
 const router = Router();
-const Group: Model<IGroup> = model('Groups');
+const Groups: Model<IGroup> = model('Groups');
 const Users: Model<IUser> = model('Users');
 
 const parsePlayerScore = (playerId) => {
@@ -44,7 +45,7 @@ const parsePlayerScore = (playerId) => {
 
 // Group By Part
 router.get('/groupsCountPerManager', async (req, res) => {
-    Group.aggregate(
+    Groups.aggregate(
         [
             {
                 $group: {
@@ -78,7 +79,7 @@ router.get('/all', async (req, res) => {
     // console.warn(conditions)
 
     if (!req.user) {
-        Group.find(...conditions).exec(async (err, result) => {
+        Groups.find(...conditions).exec(async (err, result) => {
             if (err) {
                 console.log(err.message);
                 res.status(500).send('an error occured while trying to query users');
@@ -91,7 +92,7 @@ router.get('/all', async (req, res) => {
     } else {
         // @ts-ignore
         const loggedUser = await Users.find({ googleId: req.user.googleId });
-        await Group.find({
+        await Groups.find({
             ...conditions,
             'players':
             {
@@ -132,7 +133,7 @@ router.put('/add', async (req, res) => {
         return Types.ObjectId(league)
     })
 
-    const newGroupResponse = await Group.create(newGroup)
+    const newGroupResponse = await Groups.create(newGroup)
     await newGroupResponse.save()
     if (newGroupResponse) {
         res.json(newGroupResponse);
@@ -144,7 +145,7 @@ router.put('/add', async (req, res) => {
 router.put('/', async (req, res) => {
     var { updatedGroup } = req.body;
 
-    const result: IGroup = await Group.findOne({ _id: updatedGroup._id });
+    const result: IGroup = await Groups.findOne({ _id: updatedGroup._id });
 
     if (!result) {
         res.status(500).send('an error occured while trying to update a group');
@@ -167,6 +168,18 @@ router.put('/', async (req, res) => {
         }
 
     }
+});
+
+router.put('/addBet', async (req, res) => {
+    const groups = await Groups.find({});
+    const userGroups = groups.filter((group: IGroup) => 
+        group.players.findIndex(player => 
+            player.playerId.toString() == req.body.bet.playerId) != -1)
+    userGroups.forEach((userGroup: IGroup) => {
+        userGroup.userBets.push(req.body.bet)
+        userGroup.save();
+    })
+    console.log(userGroups);
 });
 
 export default router;

@@ -1,15 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IBet extends Document {
-    gameId: String,
     playerId: String,
+    gameId: String,
     bet: String,
+    playerName: String,
+    date: Date
 }
 
-const BetsSchema: Schema = new Schema({
+const BetSchema: Schema = new Schema({
     gameId: { type: String, required: true },
     playerId: { type: String, required: true },
     bet: { type: String, required: true },
 });
 
-export default mongoose.model<IBet>('Bets', BetsSchema);
+export default mongoose.model<IBet>('Bet', BetSchema);

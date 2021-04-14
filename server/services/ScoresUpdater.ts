@@ -3,7 +3,7 @@ import { model, Model } from 'mongoose';
 import { IBet, IGames, IGroup } from '../models';
 import { getScore } from '../routes/crawler/crawler';
 
-const Bets: Model<IBet> = model('Bets');
+const Bets: Model<IBet> = model('Bet');
 const Games: Model<IGames> = model('Games');
 const Groups: Model<IGroup> = model('Groups');
 

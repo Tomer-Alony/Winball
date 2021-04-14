@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { model, Model } from 'mongoose';
+import { model, Model, Types } from 'mongoose';
 import {IBet, IGames, IGroup, IUser} from '../../models';
 
 const router = Router();
 const Groups: Model<IGroup> = model('Groups');
-const Bets: Model<IBet> = model('Bets');
+const Bet: Model<IBet> = model('Bet');
 const Games: Model<IGames> = model('Games');
 
 router.get('/', async (req, res) => {
-    const bets = await Bets.find({});
+    const bets = await Bet.find({});
     res.json(bets);
 });
 
@@ -31,6 +31,23 @@ router.get('/:groupId', async (req, res) => {
     }, {})
 
     res.json({ bets, games });
+});
+
+router.get('/userBets/:userId', async (req, res) => {
+    var userBets: IBet[] = [];
+    const groups = await Groups.find({});
+    const userGroups: IGroup[] = groups.filter((group: IGroup) => 
+        group.players.findIndex(player => 
+            player.playerId.toString() == req.params.userId) != -1)
+    userGroups.map((userGroup: IGroup) => {
+        userGroup.userBets.map((bet: IBet) => {
+            if (bet.playerId == req.params.userId) {
+                userBets.push(bet);
+            }
+        })
+    })
+
+    res.json({userBets});
 });
 
 export default router;
