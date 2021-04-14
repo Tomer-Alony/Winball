@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IBet extends Document {
-    gameId: String,
     playerId: String,
+    gameId: String,
     bet: String,
     playerName: String,
     date: Date

@@ -1,5 +1,5 @@
 import { makeStyles, Paper, TextField, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -79,36 +79,59 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
     if (time == "Invalid date") {
         time = "";
     }
+
+    const initialRender = useRef(true);
+
+    axios.get(`/api/bets/userBets/${user._id}`).then(res => {
+        var gameBet;
+        res.data.userBets.map((bet) => {
+            if (bet.gameId == gameId) {
+                gameBet = bet.bet;
+            }
+        })
+        if (gameBet) {
+            setBetTeamA(gameBet.split("-")[0]);
+            setBetTeamB(gameBet.split("-")[1]);
+        }
+    })
    
     const onChangeBet = () => {
-        
-        const betFormat = betTeamA + " - " + betTeamB;
+        if ((betTeamA !== "") && (betTeamB !== "")) {
+            const betFormat = betTeamA + "-" + betTeamB;
 
-        const bet = {
-            gameId: gameId,
-            playerId: user._id,
-            bet: betFormat,
-            playerName: user.displayName,
-            date: new Date()
-        }
-
-        axios.put('/api/groups/addBet', {bet})
-        .then(res => {
-            console.log(res)
-        })
-    }
-
-    const onChangeBetA = async (event: any) => {
-        await setBetTeamA(event.target.value);
-        console.log(betTeamA);
-        onChangeBet()
-    }
-
-    const onChangeBetB = async (event: any) => {
-        await setBetTeamB(event.target.value);
-        onChangeBet()
-    }
+            const bet = {
+                gameId: gameId,
+                playerId: user._id,
+                bet: betFormat,
+                playerName: user.displayName,
+                date: new Date()
+            }
     
+            axios.put('/api/groups/addBet', {bet})
+            .then(res => {
+                console.log(res)
+            })
+    
+        }
+    }
+
+    const onChangeBetA = (event: any) => {
+        initialRender.current = false;
+        setBetTeamA(event.target.value);
+    }
+
+    const onChangeBetB = (event: any) => {
+        initialRender.current = false;
+        setBetTeamB(event.target.value);
+    }
+
+    
+    useEffect(() => {
+        if (!initialRender.current) {
+            onChangeBet()
+        }
+    }, [betTeamA, betTeamB])
+
     return (
         <>
         <Paper className={classes.gameContainer} square>
