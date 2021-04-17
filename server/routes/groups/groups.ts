@@ -6,7 +6,6 @@ import { IGroup } from '../../models/Group';
 import GroupUser, { IGroupUser } from '../../models/GroupUser';
 import { EventEmitter } from 'events';
 import { emit } from 'process';
-import { group } from 'node:console';
 
 const router = Router();
 const Groups: Model<IGroup> = model('Groups');

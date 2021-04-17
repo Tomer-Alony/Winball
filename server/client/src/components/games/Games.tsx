@@ -89,9 +89,7 @@ export default function Games(props: GameProps, state: GameState) {
             {status ? <AlertMassage key={Math.random()} message={status} onClose={() => setStatusBase("")} /> : null}
             <div className={classes.title}>What's your guess?</div>
             {isLoading ? <CircularProgress /> :
-                <Button onClick={updateBets} color="primary">Update bets</Button>
-            }
-            {games.filter(game => new Date(game.startDate).getTime() - new Date().getTime() > 0)
+            games.filter(game => new Date(game.startDate).getTime() - new Date().getTime() > 0)
             .map(game => (<GameDisplay gameId={game._id}
                                         teamAName={game.teamAId} 
                                         teamBName={game.teamBId} 
