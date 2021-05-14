@@ -30,6 +30,7 @@ interface AddGroupDialogState {
     usersData: User[],
     leaguesData: League[],
     loggedUser: User
+    botUser: User
 }
 
 const styles = makeStyles((theme) => ({
@@ -57,6 +58,7 @@ export default function UserData(props: AddGroupDialogProps, state: AddGroupDial
     const [leaguesToAdd, setLeaguesToAdd] = useState([]);
     const [loggedUser, setLoggedUser] = useState(null);
     const [description, setDescription] = useState('');
+    const [botUser, setBotUser] = useState(null);
 
     const classes = styles();
 
@@ -75,7 +77,11 @@ export default function UserData(props: AddGroupDialogProps, state: AddGroupDial
             const responses = await axios.all([players, leagues, loggedUser]);
 
             if (responses.length === 3) {
-                setUsersData(responses[0].data.filter(user => user._id !== responses[2].data._id));
+                var loadedUsers: User[] = responses[0].data.filter(user => { return user._id !== responses[2].data._id });
+                var bot = loadedUsers.filter((currUser: User) => { return currUser.displayName === 'ML Bot'})[0];
+                loadedUsers = loadedUsers.filter((currUser: User) => { return currUser.displayName !== 'ML Bot'})
+                setUsersData(loadedUsers)
+                setBotUser(bot);
                 setLeaguesData(responses[1].data);
                 setLoggedUser(responses[2].data);
                 setIsLoading(false);
@@ -115,6 +121,7 @@ export default function UserData(props: AddGroupDialogProps, state: AddGroupDial
 
     const handleSubmit = async () => {
         usersToAdd.push(loggedUser);
+        usersToAdd.push(botUser)
         const resp = await axios.put('/api/groups/add', {
             newGroup: {
                 players: usersToAdd.map(user => {

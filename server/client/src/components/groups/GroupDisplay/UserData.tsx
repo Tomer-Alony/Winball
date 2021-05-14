@@ -2,6 +2,7 @@ import * as React from "react";
 import { makeStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from "@material-ui/core";
+import botPic from '../../../static/images/bot.png';
 
 
 interface UserDataState {
@@ -35,7 +36,7 @@ export default function UserData(props: UserDataProps, state: UserDataState) {
 
     return (
         <div className={classes.root}>
-            <Avatar alt={name} src={picPath} className={classes.large} />
+            <Avatar alt={name} src={name === 'ML Bot' ? botPic : picPath} className={classes.large} />
             <Typography variant="overline">{name}</Typography>
         </div>
     );
