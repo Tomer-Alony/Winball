@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             flexGrow: 1,
-            color: '#ffffff'
+            color: 'white'
         },
         groupCard: {
             height: `${window.innerHeight - 275}px`,
@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) =>
         },
         groupDetails: {
             color: "#ffffff"
+        },
+        textFieldColor:{
+            color:'white'
         }
     }),
 );
@@ -211,17 +214,21 @@ const Groups = () => {
         return <div style={{display: 'flex', flexDirection: 'column'}}>
             <Typography variant="h5">Filter your group by</Typography>
             <div style={{display: 'flex', flexDirection: 'row'}}>
-                <div style={{paddingRight: '16px'}}>
-                    <TextField onChange={handleNameFilter} style={{borderRadius: '4px', padding: '8px', backgroundColor: 'lightgrey'}} placeholder="Name"/>
+                <div style={{paddingRight: '16px', color:"white"}}>
+                    <TextField id="standard-basic" onChange={handleNameFilter} placeholder="Name"  
+                    InputProps={{
+                        className: classes.textFieldColor}} />
                 </div>
                 <div style={{paddingRight: '16px'}}>
-                    <TextField onChange={handleDescriptionFilter} style={{borderRadius: '4px', padding: '8px', backgroundColor: 'lightgrey'}} placeholder="Description"/>
+                    <TextField id="standard-basic" onChange={handleDescriptionFilter} placeholder="Description"
+                    InputProps={{
+                        className: classes.textFieldColor}} />
                 </div>
                 <div style={{paddingRight: '16px'}}>
                     <Select
-                        style={{borderRadius: '4px', padding: '8px', height:"48px", backgroundColor: 'lightgrey'}}
+                        id="demo-simple-select"
                         onChange={handleCommanderFilter}
-                        variant="outlined"
+                        placeholder="Is Manager?"
                     >
                         <MenuItem value={undefined}>Is Mannager?</MenuItem>
                         <MenuItem value={true}>Yes</MenuItem>
@@ -229,7 +236,7 @@ const Groups = () => {
                     </Select>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', justify: 'end'}} >
-                    <Button color="primary" style={{backgroundColor:"lightgrey"}} onClick={handleFilter}>Filter</Button>
+                    <Button color="primary" style={{backgroundColor:"#5F52B6", color:"white"}} onClick={handleFilter}>Filter</Button>
                 </div>
             </div>
         </div>;

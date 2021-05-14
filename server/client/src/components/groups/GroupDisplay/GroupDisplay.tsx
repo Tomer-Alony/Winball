@@ -22,7 +22,7 @@ interface GroupProps extends WithStyles {
 
 const useStyles = makeStyles({
     root: {
-        width: '100%'
+        width: '100%',
     },
     container: {
         maxHeight: '100%',
