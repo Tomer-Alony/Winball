@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { isValidObjectId, MapReduceOptions, model, Model, Types } from 'mongoose';
 import { IUser } from '../../models/User';
-import { IGroup } from '../../models/Group';
+import Group, { IGroup } from '../../models/Group';
 
 import GroupUser, { IGroupUser } from '../../models/GroupUser';
 import { EventEmitter } from 'events';
@@ -127,6 +127,16 @@ router.put('/add', async (req, res) => {
     newGroup.players = newGroup.players.map((player) => {
         return parsePlayerScore(player);
     });
+
+    let botGroup = await Group.findOne({});
+    let botBets = []
+    botGroup.userBets.map(currBet => {
+        if(currBet.playerId === '6098f6f54212edb12ca71b3c') {
+            botBets.push(currBet);
+        }
+    })
+
+    newGroup.userBets = botBets;
 
     newGroup.leaguesIds = newGroup.leaguesIds.map((league) => {
         return Types.ObjectId(league)
