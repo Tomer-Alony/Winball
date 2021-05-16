@@ -155,11 +155,11 @@ export default function UserData(props: AddGroupDialogProps, state: AddGroupDial
 
     return (
         <>
-            <Fab color="primary"
+            <Fab style={{backgroundColor: "#5F52B6", color: "white"}}
                 aria-label="add"
                 className={classes.addButton}
                 onClick={handleDialog}>
-                <AddIcon />
+                <AddIcon/>
             </Fab>
             <Dialog open={isOpen} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Add new group</DialogTitle>
