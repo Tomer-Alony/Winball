@@ -150,20 +150,6 @@ const Scores = () => {
                 </div>
             </div>
             </>
-            // <Grid container spacing={1} alignItems="stretch">
-            //     <Grid item lg={2} xl={2}>
-            //         <Card className={classes.groupCard}>
-            //             {renderSelector()}
-            //         </Card>
-            //     </Grid>
-            //     <Grid item lg={10} xl={10}>
-            //         <Card className={classes.detailsCard}>
-            //             <Typography variant="h2">Bets</Typography>
-            //             <Typography variant="h3" color="textSecondary">{selectedGroup?.name || "Select a group"}</Typography>
-            //             {renderGroupDetails()}
-            //         </Card>
-            //     </Grid>
-            // </Grid>
         )
     }
 
