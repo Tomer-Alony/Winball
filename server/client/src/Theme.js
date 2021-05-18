@@ -50,9 +50,12 @@ export default createMuiTheme({
           contrastText: '#fff',
         },
         secondary: { 
-          main: '#008891',
-          light: '#008891',
+          main: '#ffffff',
+          light: '#ffffff',
           contrastText: '#fff',
+        },
+        textPrimary: {
+          main: '#ffffff'
         },
         backgroundColor: {
           main: '#403f3f'

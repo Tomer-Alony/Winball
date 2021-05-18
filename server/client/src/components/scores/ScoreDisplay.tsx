@@ -1,5 +1,7 @@
 import React from "react";
 import {createStyles, makeStyles, Paper, Typography} from "@material-ui/core";
+import Avatar from '@material-ui/core/Avatar';
+import botPic from '../../static/images/bot.png';
 
 const useStyles = makeStyles(theme => createStyles({
     betCard: {
@@ -10,6 +12,14 @@ const useStyles = makeStyles(theme => createStyles({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        backgroundColor: "#403f3f",
+        color: "white"
+    },
+    playerName: {
+        display: 'flex',
+        '& > *': {
+            margin: theme.spacing(1),
+        }
     }
 }));
 
@@ -23,7 +33,8 @@ export default function ScoreDisplay ({bet, games}) {
         <>
             {isBetValid() ?
                 <Paper className={classes.betCard}>
-                    <div>
+                    <div className={classes.playerName}>
+                        {/* <Avatar src={bet.player_name === 'ML Bot' ? botPic : bet.picPath}/> */}
                         <Typography variant="h5"><b>{bet.player_name}</b></Typography>
                     </div >
                     <div>
