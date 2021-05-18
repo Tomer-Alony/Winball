@@ -14,6 +14,12 @@ const useStyles = makeStyles(theme => createStyles({
         alignItems: "center",
         backgroundColor: "#403f3f",
         color: "white"
+    },
+    playerName: {
+        display: 'flex',
+        '& > *': {
+            margin: theme.spacing(1),
+        }
     }
 }));
 
@@ -27,8 +33,8 @@ export default function ScoreDisplay ({bet, games}) {
         <>
             {isBetValid() ?
                 <Paper className={classes.betCard}>
-                    <div>
-                        <Avatar src={bet.player_name === 'ML Bot' ? botPic : bet.picPath}/>
+                    <div className={classes.playerName}>
+                        {/* <Avatar src={bet.player_name === 'ML Bot' ? botPic : bet.picPath}/> */}
                         <Typography variant="h5"><b>{bet.player_name}</b></Typography>
                     </div >
                     <div>

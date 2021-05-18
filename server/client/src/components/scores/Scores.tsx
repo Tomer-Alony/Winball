@@ -2,6 +2,7 @@ import {createStyles, makeStyles, MenuItem, Select, Typography} from "@material-
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ScoreDisplay from "./ScoreDisplay";
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 
@@ -93,6 +94,7 @@ const Scores = () => {
 
     const renderSelector = () => {
         return (
+            <div style={{alignItems:"center", display:"inline-flex"}}>
             <Select
                 className={classes.select}
                 onChange={handleSelect}
@@ -104,6 +106,8 @@ const Scores = () => {
                     )
                 }) }
             </Select>
+            <PeopleAltIcon style={{color:'white'}}></PeopleAltIcon>
+            </div>
         );
     };
 
@@ -124,7 +128,7 @@ const Scores = () => {
                                 })}
                             </div>
                         )
-                    }) : <Typography variant="h5">No bets for this group</Typography>
+                    }) : <Typography variant="h5" style={{color:'gray'}}>No bets for this group</Typography>
                 }
             </div>
         );
@@ -137,8 +141,8 @@ const Scores = () => {
             <div>
                 <div>
                     {renderSelector()}
-                    <Typography style={{paddingBottom:'20px', color:'gray'}}>
-                        {selectedGroup?.name || "Select a group"}
+                    <Typography style={{ color:'gray'}}>
+                        {selectedGroup? "" : "Select a group"}
                     </Typography>
                 </div>
                 <div>
