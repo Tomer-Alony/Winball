@@ -11,12 +11,23 @@ const useStyles = makeStyles(theme => createStyles({
     root: {
         width: '100%',
         fontFamily: theme.typography.fontFamily,
+        textAlign: 'center'
+    },
+    title: {
+        fontFamily: theme.typography.fontFamily,
+        color: '#ffffff',
+        height: '105px',
+        alignItems: 'center',
+        fontSize: '50px',
+        display: 'grid',
     },
     container: {
         maxHeight: '100%',
     },
     select: {
-        width: '100%',
+        width: '150px',
+        color: 'white',
+        fontSize: 'large'
     },
     groupCard: {
         height: `${window.innerHeight - 80}px`,
@@ -85,7 +96,7 @@ const Scores = () => {
             <Select
                 className={classes.select}
                 onChange={handleSelect}
-                variant="outlined"
+                id="standard-basic"
             >
                 { groupsData.map(({ _id, name}) => {
                     return (
@@ -121,20 +132,34 @@ const Scores = () => {
 
     const renderLayout = () => {
         return (
-            <Grid container spacing={1} alignItems="stretch">
-                <Grid item lg={2} xl={2}>
-                    <Card className={classes.groupCard}>
-                        {renderSelector()}
-                    </Card>
-                </Grid>
-                <Grid item lg={10} xl={10}>
-                    <Card className={classes.detailsCard}>
-                        <Typography variant="h2">Bets</Typography>
-                        <Typography variant="h3" color="textSecondary">{selectedGroup?.name || "Select a group"}</Typography>
-                        {renderGroupDetails()}
-                    </Card>
-                </Grid>
-            </Grid>
+            <>
+            <div className={classes.title}>Bets</div>
+            <div>
+                <div>
+                    {renderSelector()}
+                    <Typography style={{paddingBottom:'20px', color:'gray'}}>
+                        {selectedGroup?.name || "Select a group"}
+                    </Typography>
+                </div>
+                <div>
+                    {renderGroupDetails()}
+                </div>
+            </div>
+            </>
+            // <Grid container spacing={1} alignItems="stretch">
+            //     <Grid item lg={2} xl={2}>
+            //         <Card className={classes.groupCard}>
+            //             {renderSelector()}
+            //         </Card>
+            //     </Grid>
+            //     <Grid item lg={10} xl={10}>
+            //         <Card className={classes.detailsCard}>
+            //             <Typography variant="h2">Bets</Typography>
+            //             <Typography variant="h3" color="textSecondary">{selectedGroup?.name || "Select a group"}</Typography>
+            //             {renderGroupDetails()}
+            //         </Card>
+            //     </Grid>
+            // </Grid>
         )
     }
 
