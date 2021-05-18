@@ -23,12 +23,23 @@ interface GroupProps extends WithStyles {
 const useStyles = makeStyles({
     root: {
         width: '100%',
+        backgroundColor: '#403f3f',
     },
     container: {
-        maxHeight: '100%',
+        maxHeight: '100%'
     },
     tableCell: {
-        width: 'calc(100%/6)'
+        width: 'calc(100%/6)',
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 'large'
+    },
+    tableHead: {
+        width: 'calc(100%/6)',
+        backgroundColor:'#403f3f',
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 'large'
     }
 });
 
@@ -71,7 +82,7 @@ export default function GroupDisplay(props: GroupProps, state: GroupState) {
                                     <TableCell
                                         key={column.id}
                                         //@ts-ignore
-                                        style={{ width: 'calc(100%/6)' }}
+                                        className={classes.tableHead}
                                     >
                                         {column.label}
                                     </TableCell>
