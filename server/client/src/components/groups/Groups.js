@@ -10,6 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import ImageIcon from "@material-ui/icons/Image";
@@ -162,6 +163,13 @@ const Groups = () => {
     setIsEditMode(toggle);
   };
 
+  const handleDeleteGroup = async (groupId) => {
+    setGroupsData(groupsData.filter(group => group._id !== groupId));
+    axios.put("/api/groups/delete", {
+          groupId: groupId
+    });
+  }
+
   const handleUpdatedGroup = (updatedGroup) => {
     updatedGroup.isManager = true;
     const updatedGroups = groupsData.map((currGroup) => {
@@ -218,6 +226,15 @@ const Groups = () => {
                               onClick={() => handleEditMode(!isEditMode)}
                             >
                               <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              edge="end"
+                              aria-label="delete"
+                              onClick={() => {
+                                handleDeleteGroup(group._id);
+                              }}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </ListItemSecondaryAction>
                         ) : (

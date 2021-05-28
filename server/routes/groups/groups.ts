@@ -72,12 +72,14 @@ router.get("/groupsCountPerManager", async (req, res) => {
 });
 
 router.get("/all", async (req, res) => {
-  const conditions = {} as any;
+  const conditions = [] as any;
   if (req.query.name) {
-    conditions.name = { $regex: req.query.name, $options: "ig" };
+    conditions.push({ name: { $regex: req.query.name, $options: "ig" } });
   }
   if (req.query.desc) {
-    conditions.description = { $regex: req.query.desc, $options: "ig" };
+    conditions.push({
+      description: { $regex: req.query.desc, $options: "ig" },
+    });
   }
 
   if (!req.user) {
@@ -91,12 +93,20 @@ router.get("/all", async (req, res) => {
   } else {
     // @ts-ignore
     const loggedUser = await Users.find({ googleId: req.user.googleId });
-    await Groups.find({
-      ...conditions,
-      players: {
-        $elemMatch: { playerId: loggedUser[0]._id },
-      },
-    }).exec(async (err, result) => {
+    await Groups.find(
+      conditions.length > 0
+        ? {
+            $and: conditions,
+            players: {
+              $elemMatch: { playerId: loggedUser[0]._id },
+            },
+          }
+        : {
+            players: {
+              $elemMatch: { playerId: loggedUser[0]._id },
+            },
+          }
+    ).exec(async (err, result) => {
       if (err) {
         console.log(err.message);
         res.status(500).send("an error occured while trying to query users");
@@ -118,6 +128,17 @@ router.get("/all", async (req, res) => {
         res.json(resp);
       }
     });
+  }
+});
+
+router.put("/delete", async (req, res) => {
+  let { groupId } = req.body;
+
+  const deleteResponse = await Groups.deleteOne({ _id: groupId });
+  if (deleteResponse) {
+    res.json(deleteResponse);
+  } else {
+    res.send("500").send("an error occured while tryign to add a new group");
   }
 });
 
