@@ -70,6 +70,7 @@ const Groups = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [playersMeta, setPlayersMeta] = useState(new Map());
   const [isGroupUsersLoading, setIsGroupUsersLoading] = useState(false);
+  const [editedGroup, setEditedGroup] = useState();
   let nameFilter = "";
   let descFilter = "";
   let commanderFilter = "";
@@ -156,17 +157,19 @@ const Groups = () => {
       setSelectedGroup(newGroup);
     }
 
-    setGroupsData([...groupsData, newGroup]);
+    setGroupsData([...groupsData, {...newGroup, isManager: true}]);
   };
 
-  const handleEditMode = (toggle) => {
+  const handleEditMode = (toggle, group) => {
     setIsEditMode(toggle);
+    setEditedGroup(group);
   };
 
   const handleDeleteGroup = async (groupId) => {
     setGroupsData(groupsData.filter(group => group._id !== groupId));
+    setSelectedGroup(groupsData.length > 0 ? groupsData[0] : {})
     axios.put("/api/groups/delete", {
-          groupId: groupId
+      groupId: groupId
     });
   }
 
@@ -189,12 +192,12 @@ const Groups = () => {
           </div></div> :
         <>
           <AddGroupDialog handleNewGroup={handleNewGroup} />
-          <EditGroupDialog
+          {editedGroup && <EditGroupDialog
             isOpen={isEditMode}
             handleIsOpen={handleEditMode}
-            group={selectedGroup}
+            group={editedGroup}
             handleUpdatedGroup={handleUpdatedGroup}
-          />
+          />}
           <List className={classes.root}>
             {isLoading ? (
               <CircularProgress />
@@ -223,9 +226,9 @@ const Groups = () => {
                             <IconButton
                               edge="end"
                               aria-label="edit"
-                              onClick={() => handleEditMode(!isEditMode)}
+                              onClick={() => handleEditMode(!isEditMode, group)}
                             >
-                              <EditIcon />
+                              <EditIcon style={{ color: "#cfcfcf" }}/>
                             </IconButton>
                             <IconButton
                               edge="end"
@@ -234,7 +237,7 @@ const Groups = () => {
                                 handleDeleteGroup(group._id);
                               }}
                             >
-                              <DeleteIcon />
+                              <DeleteIcon style={{ color: "#cfcfcf" }}/>
                             </IconButton>
                           </ListItemSecondaryAction>
                         ) : (

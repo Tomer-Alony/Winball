@@ -80,7 +80,7 @@ export default function UserData(props: EditGroupProps, state: EditGroupState) {
     };
 
     if (isLoading && isOpen) fetchData();
-  });
+  }, []);
 
   const handlePlayers = (players) => {
     setPlayers(players);
@@ -91,9 +91,9 @@ export default function UserData(props: EditGroupProps, state: EditGroupState) {
   };
 
   const handleSave = async () => {
-    const newPlayers = players.map((player) => {
-      return player.playerId;
-    });
+    const newPlayers = players.map((player) =>
+      player._id ? player._id : player.playerId
+    );
     newPlayers.push(loggedUser._id);
     const originPlayers = group.players.map((player) => {
       return player.playerId.toString();
