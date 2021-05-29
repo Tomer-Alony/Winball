@@ -71,9 +71,10 @@ const Groups = () => {
   const [playersMeta, setPlayersMeta] = useState(new Map());
   const [isGroupUsersLoading, setIsGroupUsersLoading] = useState(false);
   const [editedGroup, setEditedGroup] = useState();
-  let nameFilter = "";
-  let descFilter = "";
-  let commanderFilter = "";
+
+  const [nameFilter, setNameFilter] = useState("");
+  const [descFilter, setDescFilter] = useState("");
+  const [commanderFilter, setCommanderFilter] = useState("");
 
   useEffect(async () => {
     const allGroupsPromise = await axios("/api/groups/all");
@@ -110,15 +111,15 @@ const Groups = () => {
   const classes = useStyles();
 
   const handleNameFilter = (e) => {
-    nameFilter = e?.target?.value;
+    setNameFilter(e?.target?.value);
   };
 
   const handleDescriptionFilter = (e) => {
-    descFilter = e?.target?.value;
+    setDescFilter(e?.target?.value)
   };
 
   const handleCommanderFilter = (e) => {
-    commanderFilter = e?.target?.value;
+    setCommanderFilter(e?.target?.value);
   };
 
   const handleGroupSelection = async (group) => {
@@ -157,7 +158,7 @@ const Groups = () => {
       setSelectedGroup(newGroup);
     }
 
-    setGroupsData([...groupsData, {...newGroup, isManager: true}]);
+    setGroupsData([...groupsData, { ...newGroup, isManager: true }]);
   };
 
   const handleEditMode = (toggle, group) => {
@@ -228,7 +229,7 @@ const Groups = () => {
                               aria-label="edit"
                               onClick={() => handleEditMode(!isEditMode, group)}
                             >
-                              <EditIcon style={{ color: "#cfcfcf" }}/>
+                              <EditIcon style={{ color: "#cfcfcf" }} />
                             </IconButton>
                             <IconButton
                               edge="end"
@@ -237,7 +238,7 @@ const Groups = () => {
                                 handleDeleteGroup(group._id);
                               }}
                             >
-                              <DeleteIcon style={{ color: "#cfcfcf" }}/>
+                              <DeleteIcon style={{ color: "#cfcfcf" }} />
                             </IconButton>
                           </ListItemSecondaryAction>
                         ) : (
@@ -277,6 +278,7 @@ const Groups = () => {
             <TextField
               id="standard-basic"
               onChange={handleNameFilter}
+              value={nameFilter}
               placeholder="Name"
               InputProps={{
                 className: classes.textFieldColor,
@@ -287,6 +289,7 @@ const Groups = () => {
             <TextField
               id="standard-basic"
               onChange={handleDescriptionFilter}
+              value={descFilter}
               placeholder="Description"
               InputProps={{
                 className: classes.textFieldColor,

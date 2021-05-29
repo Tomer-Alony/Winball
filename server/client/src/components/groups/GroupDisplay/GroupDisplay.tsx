@@ -90,13 +90,26 @@ export default function GroupDisplay(props: GroupProps, state: GroupState) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {group.players.map((currPlayer) => {
+                            {group.players.map(player => {
+                                const playerMeta = playersMeta.get(player.playerId);
+                                return {...player, 
+                                    displayName: playerMeta.displayName, 
+                                    picture: playerMeta.picture} 
+                            }).sort((playerA, playerB) => {
+                                if(playerA.displayName > playerB.displayName) {
+                                    return -1;
+                                } 
+                                if(playerA.displayName < playerB.displayName) {
+                                    return 1
+                                } 
+
+                                return 0;
+                            }).map((currPlayer) => {
                                 if (playersMeta.get(currPlayer.playerId)) {
-                                    const currPlayerMetadata = playersMeta.get(currPlayer.playerId);
                                     return (
                                         <TableRow>
                                             <TableCell key={'player' + currPlayer.playerId} className={classes.tableCell} >
-                                                <UserData name={currPlayerMetadata.displayName} picPath={currPlayerMetadata.picture} />
+                                                <UserData name={currPlayer.displayName} picPath={currPlayer.picture} />
                                             </TableCell>
                                             <TableCell key={'games' + currPlayer.playerId} className={classes.tableCell}>
                                                 {currPlayer.games}

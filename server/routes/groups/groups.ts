@@ -8,11 +8,6 @@ import {
 } from "mongoose";
 import { IUser } from "../../models/User";
 import Group, { IGroup } from "../../models/Group";
-
-import GroupUser, { IGroupUser } from "../../models/GroupUser";
-import { EventEmitter } from "events";
-import { emit } from "process";
-
 const router = Router();
 const Groups: Model<IGroup> = model("Groups");
 const Users: Model<IUser> = model("Users");
@@ -108,10 +103,8 @@ router.get("/all", async (req, res) => {
           }
     ).exec(async (err, result) => {
       if (err) {
-        console.log(err.message);
         res.status(500).send("an error occured while trying to query users");
       } else {
-        console.log(req.query.commander);
         const manager = req.query.commander && req.query.commander === "true";
         const resp = result
           .map((group) => {
