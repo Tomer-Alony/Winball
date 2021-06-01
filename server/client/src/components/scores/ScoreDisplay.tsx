@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {createStyles, makeStyles, Paper, Typography} from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import botPic from '../../static/images/bot.png';
@@ -24,10 +24,28 @@ const useStyles = makeStyles(theme => createStyles({
 }));
 
 export default function ScoreDisplay ({bet, games}) {
+    const [isBool, setIsBool] = useState(false);
+    const [isDir, setIsDir] = useState(false);
+
     const classes = useStyles();
     const isBetValid = (): boolean => {
         return (!!bet.bet && !!games[bet.gameId] && !!bet.player_name )
     }
+
+    useEffect(() => {
+        const bullOrDir = () => { 
+            const betTeamA = bet.bet.split("-")[0];
+            const betTeamB = bet.bet.split("-")[1];
+            const game = games[bet.gameId];
+            if (game.finalScoreTeamA == betTeamA && game.finalScoreTeamB == betTeamB) {
+                setIsBool(true)
+            } else if (game.finalScoreTeamA == betTeamA || game.finalScoreTeamB == betTeamB) {
+                setIsDir(true)
+            }
+        }
+        bullOrDir()
+
+    }, []);
 
     return (
         <>
@@ -42,6 +60,15 @@ export default function ScoreDisplay ({bet, games}) {
                     </div>
                     <div>
                         <Typography variant="h6">{bet.bet}</Typography>
+                    </div>
+                    <div>
+                        <Typography variant="body2">תוצאת המשחק</Typography>
+                    </div>
+                    <div>
+                        <i>{games[bet.gameId].finalScoreTeamA}</i> - <i>{games[bet.gameId].finalScoreTeamB}</i>
+                    </div>
+                    <div>
+                        {isBool? <div>Bool</div> : isDir? <div>Direction</div> : <div>Nothing</div>}
                     </div>
                 </Paper>
                 :
