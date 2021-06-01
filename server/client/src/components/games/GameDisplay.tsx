@@ -15,7 +15,10 @@ interface GameDataProps {
    startDate: Date,
    startTime: Date,
    picAPath: string,
-   picBPath: string
+   picBPath: string,
+   isOlder: Boolean,
+   finalScoreTeamA?: string,
+   finalScoreTeamB?: string
 }
 
 const useStyles = makeStyles(theme => ({
@@ -69,7 +72,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function GameDisplay(props: GameDataProps, state: GameDataState) {
     const classes = useStyles();
-    const {gameId, teamAName, teamBName, startDate, startTime, picAPath, picBPath} = props;
+    const {gameId, teamAName, teamBName, startDate, startTime, picAPath, picBPath, isOlder,
+        finalScoreTeamA, finalScoreTeamB} = props;
     const [betTeamA, setBetTeamA] = useState("");
     const [betTeamB, setBetTeamB] = useState("");
     const user = useSelector((state) => (state as any).auth);
@@ -141,15 +145,19 @@ export default function GameDisplay(props: GameDataProps, state: GameDataState) 
                 <Typography variant="body1" className={classes.team} gutterBottom>{teamAName}</Typography>
                 <img className={classes.pics} src={picAPath}></img>
                 <div className={classes.guessContent}>
+                    {isOlder? 
+                    <Typography variant="h5" gutterBottom>{finalScoreTeamA}</Typography> :
                     <TextField id="outlined-basic" className={classes.guess} 
                                 variant="outlined" InputProps={{className: classes.input }}
                                 value={betTeamA}
-                                onChange={onChangeBetA}/>
+                                onChange={onChangeBetA}/>}
                     <Typography variant="body2" gutterBottom>:</Typography>
+                    {isOlder? 
+                    <Typography variant="h5" gutterBottom>{finalScoreTeamB}</Typography> :
                     <TextField id="outlined-basic" className={classes.guess} 
                                 variant="outlined" InputProps={{className: classes.input }}
                                 value={betTeamB}
-                                onChange={onChangeBetB}/>
+                                onChange={onChangeBetB}/>}
                 </div>
                 <img className={classes.pics} src={picBPath}></img>
                 <Typography variant="body1" className={classes.team} gutterBottom>{teamBName}</Typography>
