@@ -38,6 +38,20 @@ const useStyles = makeStyles(theme => ({
         fontSize: '40px',
         display: 'grid',
     },
+    btnOlder: {
+        marginBottom: '20px',
+        color: "#b9b8b8",
+        '&:hover': {
+            backgroundColor: "#5F52B6"
+        }
+    },
+    gamesForBet: {
+        marginBottom: '15px',
+        marginTop: '15px', 
+        backgroundColor: '#5F52B6',
+        color: 'white',
+        fontFamily: theme.typography.fontFamily
+    }
 }));
 
 export default function Games(props: GameProps, state: GameState) {
@@ -48,6 +62,7 @@ export default function Games(props: GameProps, state: GameState) {
 
     const [games, setGames] = useState([]);
     const [teams, setTeams] = useState([]);
+    const [isLoadedOlderGames, setLoadOlderGames] = useState(false);
     var gamesParse: {[key: string] : Game[]} = {};
     
     const updateBets = () => {
@@ -56,6 +71,14 @@ export default function Games(props: GameProps, state: GameState) {
 
     const handleMessages = (msg: string) => {
         setStatusBase( msg )
+    }
+
+    const loadingOlderGames = () => {
+        setLoadOlderGames(true);
+    }
+    
+    const hideOlderGames = () => {
+        setLoadOlderGames(false);
     }
 
     const socket = new Socket(() => {}, handleMessages);
@@ -83,20 +106,46 @@ export default function Games(props: GameProps, state: GameState) {
     }, []);
 
     games.map(game => gamesParse[new Date(game.startDate).getTime().toString()] = [game]);
+    const date = new Date(2021, 0, 1);
 
     return (
         <div style={{ textAlign: 'center' }} className={classes.root}>
             {status ? <AlertMassage key={Math.random()} message={status} onClose={() => setStatusBase("")} /> : null}
             <div className={classes.title}>What's your guess?</div>
-            {isLoading ? <CircularProgress /> :
-            games.filter(game => new Date(game.startDate).getTime() - new Date().getTime() > 0)
+            <div>
+            {isLoading ? null : isLoadedOlderGames? 
+                <Button className={classes.btnOlder} onClick={hideOlderGames}>hide older games</Button> : 
+                <Button className={classes.btnOlder} onClick={loadingOlderGames}>older games</Button>} 
+            </div>
+
+            
+            {!isLoadedOlderGames ? null : 
+            games.filter(game => new Date(game.startDate).getTime() - date.getTime() < 0)
             .map(game => (<GameDisplay gameId={game._id}
                                         teamAName={game.teamAId} 
                                         teamBName={game.teamBId} 
                                         startDate={game.startDate}
                                         startTime={(game.startTime) ? game.startTime : ""}
                                         picAPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamAId))?.picPath || FootballPic : ""}
-                                        picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""}></GameDisplay>))}
+                                        picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""}
+                                        isOlder={true}
+                                        finalScoreTeamA={game.finalScoreTeamA}
+                                        finalScoreTeamB={game.finalScoreTeamB}></GameDisplay>))}
+
+            {isLoading ? <CircularProgress /> :
+
+            <>
+            <div className={classes.gamesForBet}><Typography>Games for bet</Typography></div>
+            {games.filter(game => new Date(game.startDate).getTime() - date.getTime() > 0)
+            .map(game => (<GameDisplay gameId={game._id}
+                                        teamAName={game.teamAId} 
+                                        teamBName={game.teamBId} 
+                                        startDate={game.startDate}
+                                        startTime={(game.startTime) ? game.startTime : ""}
+                                        picAPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamAId))?.picPath || FootballPic : ""}
+                                        picBPath={(teams.length != 0) ? teams.find((currTeam) => currTeam.name.includes(game.teamBId))?.picPath || FootballPic : ""}
+                                        isOlder={false}></GameDisplay>))} 
+                                        </>}
         </div>
     );
 };
