@@ -1,5 +1,5 @@
 import {makeStyles, Paper, Snackbar, TextField, Typography, WithStyles} from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Game } from '../../modles/Game';
 import axios from 'axios';
 import GameDisplay from './GameDisplay';
@@ -10,8 +10,9 @@ import Button from "@material-ui/core/Button";
 import AlertMassage from "../AlertMessage";
 import Socket from "../../helpers/Socket";
 import {useSelector} from "react-redux";
-import {cleanup} from "@testing-library/react";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import UndoIcon from '@material-ui/icons/Undo';
+import IconButton from "@material-ui/core/IconButton";
 
 
 interface GameState {
@@ -48,13 +49,18 @@ const useStyles = makeStyles(theme => ({
     gamesForBet: {
         marginBottom: '15px',
         marginTop: '15px', 
-        backgroundColor: '#5F52B6',
-        color: 'white',
+        backgroundColor: '#c6c1ec',
+        color: 'black',
         fontFamily: theme.typography.fontFamily
+    },
+    gotoBtn: {
+        position: "fixed",
+        bottom: '20px',
+        right: '20px', 
     }
 }));
 
-export default function Games(props: GameProps, state: GameState) {
+export default function Games(this:any, props: GameProps, state: GameState) {
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState(true);
     const [status, setStatusBase] = useState("");
@@ -64,6 +70,8 @@ export default function Games(props: GameProps, state: GameState) {
     const [teams, setTeams] = useState([]);
     const [isLoadedOlderGames, setLoadOlderGames] = useState(false);
     var gamesParse: {[key: string] : Game[]} = {};
+
+    const divRef = useRef(null);
     
     const updateBets = () => {
         socket.sendMessage(`${user?.displayName || "Someone"} just placed a bet!`)
@@ -109,9 +117,17 @@ export default function Games(props: GameProps, state: GameState) {
     const date = new Date(2021, 0, 1);
 
     return (
+        <>
+        <div className={classes.gotoBtn}>
+        {isLoading? null : isLoadedOlderGames?
+                <IconButton style={{backgroundColor:'#c6c1ec'}} onClick={() => {divRef.current.scrollIntoView()}}>
+                    <UndoIcon></UndoIcon>
+                </IconButton> : null}
+        </div>
         <div style={{ textAlign: 'center' }} className={classes.root}>
             {status ? <AlertMassage key={Math.random()} message={status} onClose={() => setStatusBase("")} /> : null}
             <div className={classes.title}>What's your guess?</div>
+          
             <div>
             {isLoading ? null : isLoadedOlderGames? 
                 <Button className={classes.btnOlder} onClick={hideOlderGames}>hide older games</Button> : 
@@ -135,7 +151,9 @@ export default function Games(props: GameProps, state: GameState) {
             {isLoading ? <CircularProgress /> :
 
             <>
-            <div className={classes.gamesForBet}><Typography>Games for bet</Typography></div>
+            {isLoadedOlderGames? 
+                <div ref={divRef} className={classes.gamesForBet}><Typography>Games for bet</Typography></div>
+                : null }
             {games.filter(game => new Date(game.startDate).getTime() - date.getTime() > 0)
             .map(game => (<GameDisplay gameId={game._id}
                                         teamAName={game.teamAId} 
@@ -147,5 +165,6 @@ export default function Games(props: GameProps, state: GameState) {
                                         isOlder={false}></GameDisplay>))} 
                                         </>}
         </div>
+        </>
     );
 };

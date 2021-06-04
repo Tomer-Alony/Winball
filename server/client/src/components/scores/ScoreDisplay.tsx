@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => createStyles({
 }));
 
 export default function ScoreDisplay ({bet, games}) {
-    const [isBool, setIsBool] = useState(false);
+    const [isBullseye, setIsBullseye] = useState(false);
     const [isDir, setIsDir] = useState(false);
 
     const classes = useStyles();
@@ -38,8 +38,10 @@ export default function ScoreDisplay ({bet, games}) {
             const betTeamB = bet.bet.split("-")[1];
             const game = games[bet.gameId];
             if (game.finalScoreTeamA == betTeamA && game.finalScoreTeamB == betTeamB) {
-                setIsBool(true)
-            } else if (game.finalScoreTeamA == betTeamA || game.finalScoreTeamB == betTeamB) {
+                setIsBullseye(true)
+            } else if ((betTeamA == betTeamB && game.finalScoreTeamA == game.finalScoreTeamB) || 
+                        (betTeamA > betTeamB && game.finalScoreTeamA > game.finalScoreTeamB) ||
+                        (betTeamA < betTeamB && game.finalScoreTeamA < game.finalScoreTeamB)) {
                 setIsDir(true)
             }
         }
@@ -59,16 +61,13 @@ export default function ScoreDisplay ({bet, games}) {
                         <i>"{games[bet.gameId].teamAId}"</i> - <i>"{games[bet.gameId].teamBId}"</i>
                     </div>
                     <div>
-                        <Typography variant="h6">{bet.bet}</Typography>
+                        <Typography style={{color: isBullseye? 'green': isDir? 'orange' : 'white'}} variant="h6">{bet.bet}</Typography>
                     </div>
                     <div>
                         <Typography variant="body2">תוצאת המשחק</Typography>
                     </div>
                     <div>
                         <i>{games[bet.gameId].finalScoreTeamA}</i> - <i>{games[bet.gameId].finalScoreTeamB}</i>
-                    </div>
-                    <div>
-                        {isBool? <div>Bool</div> : isDir? <div>Direction</div> : <div>Nothing</div>}
                     </div>
                 </Paper>
                 :
