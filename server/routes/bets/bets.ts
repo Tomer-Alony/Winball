@@ -6,18 +6,21 @@ const router = Router();
 const Groups: Model<IGroup> = model('Groups');
 const Bet: Model<IBet> = model('Bet');
 const Games: Model<IGames> = model('Games');
+const perPage = 5;
 
 router.get('/', async (req, res) => {
     const bets = await Bet.find({});
     res.json(bets);
 });
 
-router.get('/:groupId', async (req, res) => {
+router.get('/:groupId/:page', async (req, res) => {
     const groupBets = await Groups.findOne({
         _id: req.params.groupId
     }) as IGroup;
 
-    const bets = groupBets?.userBets;
+    const page: number = parseInt(req.params.page) || 0;
+
+    const bets = groupBets?.userBets?.slice(page * perPage, (page + 1) * perPage);
     const gamesIds = bets?.map(b => b.gameId);
 
     const gamesData = await Games.find({ _id: { $in : gamesIds }}).exec();

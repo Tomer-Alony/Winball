@@ -3,8 +3,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ScoreDisplay from "./ScoreDisplay";
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const padding = 20;
 
@@ -59,7 +58,8 @@ const Scores = () => {
     const classes = useStyles();
     const [groupsData, setGroupsData] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const [groupBets, setGroupBets] = useState({} as { bets: any, games: any });
+    const [groupBets, setGroupBets] = useState({ bets: [], games: []} as { bets: any, games: any });
+    const [page, setPage] = useState(0);
 
     useEffect(() => {
         const allGroupsPromise = async () => {
@@ -71,9 +71,9 @@ const Scores = () => {
         allGroupsPromise()
     }, []);
 
-    const fetchGroupBets = async (groupId: string) => {
-        const betsData = await axios.get(`/api/bets/${groupId}`)
+    const fetchGroupBets = async (groupId: string, fromPage?: number) => {
 
+        const betsData = await axios.get(`/api/bets/${groupId}/${fromPage !== undefined ? fromPage : page}`)
         const { bets, games } = betsData?.data
         const groupedByDate = bets?.reduce((acc, cur) => {
             if (acc[cur.date]) {
@@ -83,13 +83,14 @@ const Scores = () => {
             }
             return {...acc};
         }, {})
-
-        setGroupBets({ bets: groupedByDate, games });
+        setPage(fromPage !== undefined ? fromPage + 1 : page + 1);
+        return setGroupBets({bets: {...groupBets.bets, ...groupedByDate}, games: {...groupBets.games, ...games}});
     }
 
-    const handleSelect = (event: any) => {
+    const handleSelect = async (event: any) => {
         setSelectedGroup(groupsData.find(g => g._id === event.target.value));
-        fetchGroupBets(event.target.value);
+        setGroupBets({ bets: [], games: [] });
+        await fetchGroupBets(event.target.value, 0);
     }
 
     const renderSelector = () => {
@@ -111,25 +112,36 @@ const Scores = () => {
         );
     };
 
+    const fetchNext = async () => {
+        console.log("loading")
+        if (!selectedGroup?._id) return;
+        return await fetchGroupBets(selectedGroup._id);
+    }
     const renderGroupDetails = () => {
         const dates = Object.keys(groupBets.bets || {});
         return (
             <div className={classes.scoresTable}>
-                {
-                    dates.length ? dates.map(date => {
-                        return (
-                            <div className={classes.scoreDay}>
-                                {/* <Typography variant="h5">{new Date(date).toDateString()}</Typography> */}
-                                {
-                                    groupBets.bets[date]?.length && groupBets.bets[date]?.map(bet => {
-                                    return (
-                                        <ScoreDisplay bet={bet} games={groupBets.games}/>
-                                    )
-                                })}
-                            </div>
-                        )
-                    }) : <Typography variant="h5" style={{color:'gray'}}>No bets for this group</Typography>
-                }
+                <InfiniteScroll
+                    hasMore={true}
+                    next={fetchNext}
+                    loader={<h3>Loading...</h3>}
+                    dataLength={groupBets.bets.length}>
+                    {
+                        dates.length ? dates.map(date => {
+                            return (
+                                <div className={classes.scoreDay}>
+                                    {/* <Typography variant="h5">{new Date(date).toDateString()}</Typography> */}
+                                    {
+                                        groupBets.bets[date]?.length && groupBets.bets[date]?.map(bet => {
+                                        return (
+                                            <ScoreDisplay bet={bet} games={groupBets.games}/>
+                                        )
+                                    })}
+                                </div>
+                            )
+                        }) : <Typography variant="h5" style={{color:'gray'}}>No bets for this group</Typography>
+                    }
+                </InfiniteScroll>
             </div>
         );
     }
